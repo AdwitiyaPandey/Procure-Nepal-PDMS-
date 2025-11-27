@@ -8,18 +8,18 @@ function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto bg-white p-6 rounded shadow">
-        <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="p-4 border rounded">
+      <div className="max-w-6xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow">
+        <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="p-4 border rounded-lg">
             <div className="text-sm text-gray-500">Buyers registered</div>
             <div className="text-2xl font-semibold">{buyersCount}</div>
           </div>
-          <div className="p-4 border rounded">
+          <div className="p-4 border rounded-lg">
             <div className="text-sm text-gray-500">Suppliers registered</div>
             <div className="text-2xl font-semibold">{suppliersCount}</div>
           </div>
-          <div className="p-4 border rounded">
+          <div className="p-4 border rounded-lg">
             <div className="text-sm text-gray-500">Pending approvals</div>
             <div className="text-2xl font-semibold">3</div>
           </div>
@@ -44,16 +44,16 @@ function AdminDashboard() {
                 <td className="py-3">Supplier X</td>
                 <td className="py-3">NPR 25,000</td>
                 <td className="py-3">
-                  <button className="mr-2 px-2 py-1 border rounded">Read</button>
-                  <button className="mr-2 px-2 py-1 bg-blue-600 text-white rounded">Update</button>
-                  <button className="px-2 py-1 bg-red-600 text-white rounded">Delete</button>
+                  <button className="mr-2 px-2 py-1 border rounded-md">Read</button>
+                  <button className="mr-2 px-2 py-1 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-md">Update</button>
+                  <button className="px-2 py-1 bg-red-600 text-white rounded-md">Delete</button>
                 </td>
               </tr>
             </tbody>
           </table>
 
           <div className="mt-6">
-            <Link to="/" className="text-blue-600 underline">Back to site</Link>
+            <Link to="/" className="text-green-600 underline">Back to site</Link>
           </div>
         </div>
       </div>

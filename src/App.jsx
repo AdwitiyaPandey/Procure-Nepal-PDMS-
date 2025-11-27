@@ -21,6 +21,8 @@ function App() {
         <Route path="/signup/supplier" element={<SignupSupplier />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/request-quote/:id" element={<RequestQuote />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/contact-seller/:id" element={<RequestQuote />} />
         <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </BrowserRouter>

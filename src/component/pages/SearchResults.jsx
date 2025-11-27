@@ -17,19 +17,19 @@ function SearchResults() {
   const results = query ? products.filter(p => p.title.toLowerCase().includes(query)) : []
 
   return (
-    <div className="min-h-screen p-8 bg-gray-50">
-      <div className="max-w-5xl mx-auto bg-white p-6 rounded shadow">
-        <h2 className="text-xl font-semibold mb-4">Search results for "{q}"</h2>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-5xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow">
+        <h2 className="text-2xl font-semibold mb-4">Search results for "{q}"</h2>
         {!query && <p className="text-gray-600">Enter a search term to find products.</p>}
         {query && results.length === 0 && <p className="text-gray-600">No products found.</p>}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           {results.map(p => (
-            <div key={p.id} className="border rounded p-3">
-              <div className="font-semibold">{p.title}</div>
-              <div className="text-sm text-gray-600">NPR {p.price.toLocaleString()}</div>
-              <div className="mt-2">
-                <Link to={`/request-quote/${p.id}`} className="text-white bg-blue-600 px-3 py-1 rounded">Request Quote</Link>
+            <div key={p.id} className="border rounded-lg p-4">
+              <div className="font-semibold mb-2">{p.title}</div>
+              <div className="text-sm text-gray-600 mb-3">NPR {p.price.toLocaleString()}</div>
+              <div>
+                <Link to={`/request-quote/${p.id}`} className="inline-block bg-gradient-to-r from-green-600 to-blue-600 text-white px-3 py-1 rounded-md">Request Quote</Link>
               </div>
             </div>
           ))}

@@ -1,36 +1,76 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import logo from '../assets/images/logo.png'
 
 function Login() {
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ username: '', password: '' })
+
+  function handleChange(e) {
+    const { name, value } = e.target
+    setForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    // simulate auth — replace with real auth later
+    if (!form.username || !form.password) {
+      alert('Please enter username and password')
+      return
+    }
+    alert('Logged in (demo)')
+    navigate('/')
+  }
+
   return (
-    <>
-    <section className=" flex  w-[100%] h-[100%] gap-20  items-center justify-aroun ">
+    <div className="min-h-screen flex items-center justify-center login-bg px-4">
+      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        <div className="hidden md:flex items-center justify-center">
+          <div className="transform-gpu float-img w-full max-w-sm">
+            <img src={logo} alt="Procure Nepal logo" className="rounded-xl shadow-lg w-full object-cover" />
+          </div>
+        </div>
 
-<div className="left-banner w-[50%]  mt-20 h-screen ">
-    <img className='img-1 w-1000 h-230'  src="https://media.istockphoto.com/id/1484852942/photo/smart-warehouse-inventory-management-system-concept.jpg?s=612x612&w=0&k=20&c=q5hzpG2i4A7iVLT7sseXdKIsVxClkLJrUlLsZJNIGMs=" alt="" />
+        <div className="login-card p-8 md:p-10 rounded-xl">
+          <div className="mb-6 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold">P</div>
+            <div>
+              <h2 className="text-2xl font-semibold">Sign in</h2>
+              <p className="text-sm text-gray-500">Welcome back — please sign in to your account</p>
+            </div>
+          </div>
 
-</div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-left text-sm text-gray-600">Username or Email</label>
+              <input name="username" value={form.username} onChange={handleChange} className="w-full p-3 border border-gray-200 rounded-md focus:ring-2 focus:ring-green-300 input-underline" placeholder="you@example.com" />
+            </div>
 
+            <div>
+              <label className="block text-left text-sm text-gray-600">Password</label>
+              <input name="password" value={form.password} onChange={handleChange} type="password" className="w-full p-3 border border-gray-200 rounded-md focus:ring-2 focus:ring-green-300" placeholder="••••••••" />
+            </div>
 
-<div className=" right_banner w-[50%] my-auto  h-screen flex flex-col justify-center items-center ">
-    <h1 className='text-9xl font-bold text-center mb-10'>Login</h1>
-    <form className='flex flex-col gap-4'>
-      <h3 className='text-left text-2xl mt-2'>Username:</h3>
-        <input className='p-2 border border-gray-300 text-2xl text-white rounded bg-black' type="text" placeholder='Username' />
-        <h3 className='text-left text-2xl mt-4'>Password:</h3>
-        <input className='p-2 border border-gray-300  text-2xl rounded bg-black text-white' type="password" placeholder='Password' />
+            <div className="flex items-center justify-between">
+              <div className="text-sm">
+                <Link to="/get-started" className="text-green-600 hover:underline">Create account</Link>
+              </div>
+              <div className="text-sm text-gray-500">Forgot password?</div>
+            </div>
 
-        <button className='bg-black text-white p-2  text-2xl rounded hover:bg-black-600 transition'>Login</button>
-      
-       <p className='mt-4 text-2xl'> Not registered yet? <a href="#" className='text-red-500 hover:underline'> Create a new account</a></p>   
+            <div className="pt-2">
+              <button type="submit" className="w-full glass-button bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-md">Sign in</button>
+            </div>
+          </form>
 
-    </form>
-</div>
-
-
-
-
-</section>
-    </>
+          <div className="mt-6 text-sm text-center text-gray-500">Or continue with</div>
+          <div className="mt-4 flex gap-3">
+            <button className="flex-1 py-2 rounded-md border text-sm">Google</button>
+            <button className="flex-1 py-2 rounded-md border text-sm">LinkedIn</button>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 

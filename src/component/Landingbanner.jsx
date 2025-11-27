@@ -1,5 +1,4 @@
 import React from 'react'
-import React from 'react'
 import { Link } from 'react-router-dom'
 
 const products = [
@@ -16,7 +15,7 @@ const products = [
     id: 'p2',
     title: 'Industrial Flour (25kg)',
     price: 2200,
-    image: 'https://images.unsplash.com/photo-1604917877936-4f5e2e07f1d7?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=6e7b6de5c8e1e8c9b2b7a6c3d3f9a1a2',
+    image: 'https://images.unsplash.com/photo-1595801106239-faefa2cdcf75?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     rating: 4.3,
     reviews: 58,
     margin: '10-15%'
@@ -25,7 +24,7 @@ const products = [
     id: 'p3',
     title: 'Stainless Steel Bolts (1000pcs)',
     price: 12500,
-    image: 'https://images.unsplash.com/photo-1555685812-4b943f1a7d9d?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=3a9a5a6f5c4b2d1e0f6a8b7c9d5e4f6a',
+    image: 'https://plus.unsplash.com/premium_photo-1677612031058-e90a2a6c03ed?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     rating: 4.8,
     reviews: 34,
     margin: '5-9%'

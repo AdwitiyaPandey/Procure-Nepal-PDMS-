@@ -5,6 +5,7 @@ function SignupSupplier() {
   const navigate = useNavigate()
   const [form, setForm] = useState({
     fullname: '',
+    email: '',
     companyName: '',
     pan: '',
     vat: '',
@@ -25,8 +26,40 @@ function SignupSupplier() {
 
   function handleSubmit(e) {
     e.preventDefault()
-    alert('Supplier signup submitted. Documents pending admin approval.')
-    navigate('/')
+    // basic client-side validation
+    if (!form.fullname || !form.email || !form.companyName) {
+      alert('Please fill name, email and company name')
+      return
+    }
+
+    const fd = new FormData()
+    fd.append('fullname', form.fullname)
+    fd.append('email', form.email)
+    fd.append('companyName', form.companyName)
+    fd.append('pan', form.pan)
+    fd.append('vat', form.vat)
+    fd.append('turnover', form.turnover)
+    fd.append('established', form.established)
+    if (form.citizenship) fd.append('citizenship', form.citizenship)
+    if (form.profilePhoto) fd.append('profilePhoto', form.profilePhoto)
+
+    fetch('http://localhost:4000/api/suppliers', {
+      method: 'POST',
+      body: fd
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data && data.ok) {
+          alert('Supplier signup submitted. Documents pending admin approval.')
+          navigate('/')
+        } else {
+          alert('Submission failed: ' + (data.error || 'unknown'))
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        alert('Submission failed')
+      })
   }
 
   return (
@@ -38,6 +71,11 @@ function SignupSupplier() {
           <div>
             <label className="block mb-2 text-sm text-gray-600">Full name</label>
             <input name="fullname" value={form.fullname} onChange={handleChange} className="w-full p-3 border rounded-md" />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm text-gray-600">Email</label>
+            <input name="email" value={form.email} onChange={handleChange} className="w-full p-3 border rounded-md" placeholder="you@example.com" />
           </div>
 
           <div>

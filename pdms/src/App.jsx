@@ -4,6 +4,9 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Login from './component/Login'
 import SellerRegistrationRequest from './component/SellerRegistrationRequest'
+import SellerAccountStatus from './component/SellerAccountStatus'
+import ViewCustomerOrder from './component/ViewCustomerOrder'
+import CustomerRegistration from './component/CustomerRegistration'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,7 +16,10 @@ function App() {
     
      {/* <Login/>
      */}
-     <SellerRegistrationRequest/>
+     {/* <SellerRegistrationRequest/> */}
+     {/* <SellerAccountStatus/> */}
+     {/* <ViewCustomerOrder/> */}
+     <CustomerRegistration/>
      </>
      
   )

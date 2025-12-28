@@ -88,24 +88,138 @@ export default function SellerApplications({ initial = sampleApplications }) {
     );
   });
 
-  const styles = {
-    container: { maxWidth: "900px", margin: "0 auto", padding: "24px", fontFamily: "sans-serif" },
-    header: { display: "flex", justifyContent: "space-between", marginBottom: "24px" },
-    input: { padding: "8px 12px", fontSize: "14px", borderRadius: "6px", border: "1px solid #ccc", outline: "none" },
-    select: { padding: "8px 12px", fontSize: "14px", borderRadius: "6px", border: "1px solid #ccc", outline: "none" },
-    table: { width: "100%", borderCollapse: "collapse", textAlign: "left" },
-    th: { padding: "12px 8px", fontSize: "14px", color: "#555", borderBottom: "1px solid #ddd" },
-    td: { padding: "12px 8px", fontSize: "14px", color: "#555", borderBottom: "1px solid #eee", verticalAlign: "top" },
-    button: { padding: "6px 12px", borderRadius: "6px", fontSize: "14px", border: "none", cursor: "pointer" },
-    approveBtn: { backgroundColor: "#16a34a", color: "#fff" },
-    rejectBtn: { backgroundColor: "#dc2626", color: "#fff" },
-    cancelBtn: { backgroundColor: "#f3f4f6", color: "#111", border: "1px solid #ccc" },
-    modalOverlay: { position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.3)", zIndex: 40 },
-    modalContent: { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "#fff", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.2)", zIndex: 50, maxWidth: "500px", width: "100%", overflow: "hidden" },
-    modalBody: { padding: "24px" },
-    avatar: { height: "40px", width: "40px", borderRadius: "50%", backgroundColor: "#e0e7ff", color: "#4338ca", display: "flex", justifyContent: "center", alignItems: "center", fontWeight: "bold" },
-    status: { display: "inline-block", padding: "2px 6px", borderRadius: "9999px", fontSize: "12px", fontWeight: "bold" },
-  };
+const styles = {
+  container: {
+    maxWidth: "960px",
+    margin: "40px auto",
+    padding: "28px",
+    fontFamily: "Inter, sans-serif",
+    backgroundColor: "#ffffff",
+    borderRadius: "12px",
+    boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
+  },
+
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "12px",
+    marginBottom: "28px",
+    flexWrap: "wrap",
+  },
+
+  input: {
+    padding: "10px 14px",
+    fontSize: "14px",
+    borderRadius: "8px",
+    border: "1px solid #d1d5db",
+    outline: "none",
+  },
+
+  select: {
+    padding: "10px 14px",
+    fontSize: "14px",
+    borderRadius: "8px",
+    border: "1px solid #d1d5db",
+    outline: "none",
+    backgroundColor: "#fff",
+  },
+
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    textAlign: "left",
+    backgroundColor: "#fff",
+  },
+
+  th: {
+    padding: "14px 10px",
+    fontSize: "13px",
+    color: "#374151",
+    fontWeight: "600",
+    borderBottom: "2px solid #e5e7eb",
+  },
+
+  td: {
+    padding: "14px 10px",
+    fontSize: "14px",
+    color: "#4b5563",
+    borderBottom: "1px solid #f1f5f9",
+    verticalAlign: "middle",
+  },
+
+  button: {
+    padding: "8px 14px",
+    borderRadius: "8px",
+    fontSize: "13px",
+    border: "none",
+    cursor: "pointer",
+    fontWeight: "600",
+  },
+
+  approveBtn: {
+    backgroundColor: "#22c55e",
+    color: "#ffffff",
+  },
+
+  rejectBtn: {
+    backgroundColor: "#ef4444",
+    color: "#ffffff",
+  },
+
+  cancelBtn: {
+    backgroundColor: "#f9fafb",
+    color: "#111827",
+    border: "1px solid #d1d5db",
+  },
+
+  modalOverlay: {
+    position: "fixed",
+    inset: 0,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    zIndex: 40,
+  },
+
+  modalContent: {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "#ffffff",
+    borderRadius: "14px",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+    zIndex: 50,
+    maxWidth: "520px",
+    width: "90%",
+    overflow: "hidden",
+  },
+
+  modalBody: {
+    padding: "28px",
+  },
+
+  avatar: {
+    height: "44px",
+    width: "44px",
+    borderRadius: "50%",
+    backgroundColor: "#eef2ff",
+    color: "#4f46e5",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontWeight: "700",
+  },
+
+  status: {
+    display: "inline-block",
+    padding: "4px 10px",
+    borderRadius: "9999px",
+    fontSize: "12px",
+    fontWeight: "700",
+    backgroundColor: "#e5e7eb",
+    color: "#374151",
+  },
+};
+
 
   function StatusBadge({ status }) {
     let style = { ...styles.status };
@@ -263,3 +377,4 @@ export default function SellerApplications({ initial = sampleApplications }) {
     </div>
   );
 }
+

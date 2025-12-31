@@ -1,4 +1,6 @@
 import './App.css'
+
+import { toast, Toaster } from "react-hot-toast";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './AuthContext'
 import Landing from './component/pages/Landing'
@@ -18,6 +20,7 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+      <Toaster position="top-right" />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/get-started" element={<GetStarted />} />

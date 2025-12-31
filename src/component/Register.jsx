@@ -1,56 +1,62 @@
-import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import { auth } from '../firebase'
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import { toast, Toaster } from "react-hot-toast";
 
 function Register() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     fullname: '',
     email: '',
     password: '',
     confirmPassword: ''
-  })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   function handleChange(e) {
-    const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
-    setError('')
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+    setError('');
   }
 
   async function handleSubmit(e) {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (!form.fullname || !form.email || !form.password || !form.confirmPassword) {
-      setError('All fields are required')
-      return
+      setError('All fields are required');
+      return;
     }
 
     if (form.password.length < 6) {
-      setError('Password must be at least 6 characters')
-      return
+      setError('Password must be at least 6 characters');
+      return;
     }
 
     if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match')
-      return
+      setError('Passwords do not match');
+      return;
     }
 
-    setLoading(true)
+
+
+    setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password)
-      await updateProfile(userCredential.user, {
-        displayName: form.fullname
-      })
-      navigate('/get-started')
+      await axios.post('http://localhost:5000/api/auth/register', {
+        name: form.fullname,
+        email: form.email,
+        password: form.password
+      });
+
+      toast.success('Registration Successful!');
+      setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
-      setError(err.message)
+      setError(err.response?.data?.message || err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 flex items-center justify-center px-4 py-8">

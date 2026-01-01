@@ -4,23 +4,41 @@ const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    // When using multer, file is in req.file and fields in req.body
+    const { name, email, password, role, businessName, registrationNumber } = req.body;
+    const verificationImage = req.file ? req.file.filename : null;
 
     // 1. Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 2. INSERT INTO DATABASE  
-    db.run(
-      "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
-      [name, email, hashedPassword, role],
-      function(err) {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ message: "Registration failed" });
+    // 2. INSERT INTO DATABASE
+    // If supplier, store credentials and verification image; suppliers start as unverified
+    if (role === 'supplier') {
+      const credentials = JSON.stringify({ businessName: businessName || null, registrationNumber: registrationNumber || null });
+      db.run(
+        "INSERT INTO users (name, email, password, role, verification_image, credentials, verified) VALUES (?, ?, ?, ?, ?, ?, 0)",
+        [name, email, hashedPassword, role, verificationImage, credentials],
+        function(err) {
+          if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Registration failed" });
+          }
+          res.status(201).json({ message: "Supplier registered — pending verification" });
         }
-        res.status(201).json({ message: "User registered successfully" });
-      }
-    );
+      );
+    } else {
+      db.run(
+        "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
+        [name, email, hashedPassword, role],
+        function(err) {
+          if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Registration failed" });
+          }
+          res.status(201).json({ message: "User registered successfully" });
+        }
+      );
+    }
 
   } catch (error) {
     console.error(error);

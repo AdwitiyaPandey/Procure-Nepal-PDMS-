@@ -51,10 +51,9 @@ function Login() {
       {/* Left Side - Brand Section (Hidden on mobile) */}
       <div className="hidden md:flex md:w-1/2 bg-black text-white flex-col justify-center items-center p-8">
         <div className="mb-8">
-          <img src="/src/assets/images/favicon/favicon.ico" alt="ProcureNP Logo" className="h-16 w-16 mx-auto mb-4" />
+          <img src="/src/assets/images/procure_logo.png" alt="ProcureNP Logo" className="h-16 w-auto mx-auto mb-4" />
           <p className="text-center text-xl font-bold">ProcureNP</p>
         </div>
-        <img src="/wb-logo.svg" alt="WB Logo" className="h-24 w-24 mb-8" />
         <p className="text-gray-300 text-lg text-center mb-8">
           Welcome back to Nepal's trusted wholesale marketplace
         </p>
@@ -79,7 +78,7 @@ function Login() {
         <div className="w-full max-w-md">
           <div className="mb-8">
             <Link to="/" className="inline-flex items-center gap-2 mb-6 md:hidden hover:opacity-70 transition-opacity duration-300">
-              <img src="/src/assets/images/favicon/favicon.ico" alt="ProcureNP" className="h-10 w-10" />
+              <img src="/src/assets/images/procure_logo.png" alt="ProcureNP" className="h-10 w-auto" />
             </Link>
             <Link to="/" className="inline-flex items-center gap-2 mb-4 text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
               <i className="bi bi-arrow-left"></i>

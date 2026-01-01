@@ -3,8 +3,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './AuthContext'
 import Landing from './component/pages/Landing'
 import GetStarted from './component/pages/GetStarted'
-import SignupBuyer from './component/pages/SignupBuyer'
-import SignupSupplier from './component/pages/SignupSupplier'
 import AdminDashboard from './component/pages/AdminDashboard'
 import SearchResults from './component/pages/SearchResults'
 import RequestQuote from './component/pages/RequestQuote'
@@ -26,8 +24,6 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/seller-register" element={<GetStarted />} />
-          <Route path="/signup/buyer" element={<SignupBuyer />} />
-          <Route path="/signup/supplier" element={<SignupSupplier />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/request-quote/:id" element={<RequestQuote />} />
           <Route path="/contact-seller/:id" element={<RequestQuote />} />

@@ -1,7 +1,7 @@
 import express from 'express'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { PrismaClient } from '@prisma/client'
+import prisma from '../config/prisma.js'
 import crypto from 'crypto'
 import process from 'process'
 import {
@@ -17,7 +17,6 @@ import upload from '../middleware/upload.js'
 import { authenticateToken } from '../middleware/auth.js'
 
 const router = express.Router()
-const prisma = new PrismaClient()
 
 // Helper to generate JWT token
 function generateToken(user) {
@@ -137,7 +136,7 @@ router.post('/register/seller', upload.single('profilePhoto'), async (req, res) 
 
     // Check if PAN already exists
     const existingPAN = await prisma.supplier.findUnique({
-      where: { pan: validatedData.pan },
+      where: { pan: validatedData.panNumber },
     })
 
     if (existingPAN) {
@@ -173,12 +172,12 @@ router.post('/register/seller', upload.single('profilePhoto'), async (req, res) 
         profilePhoto: profilePhotoUrl,
         role: 'seller',
         supplier: {
-          create: {
+            create: {
             companyName: validatedData.companyName,
-            pan: validatedData.pan,
-            vat: validatedData.vat,
+            pan: validatedData.panNumber,
+            vat: validatedData.vatNumber,
             turnover: validatedData.turnover,
-            established: validatedData.established,
+            established: validatedData.establishedDate,
             citizenship: validatedData.citizenship,
             status: 'pending',
           },

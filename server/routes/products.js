@@ -1,12 +1,11 @@
 import express from 'express'
-import { PrismaClient } from '@prisma/client'
+import prisma from '../config/prisma.js'
 import { authenticateToken } from '../middleware/auth.js'
 import upload from '../middleware/upload.js'
 import { uploadToCloudinary } from '../utils/cloudinaryUpload.js'
 import { CreateProductSchema, UpdateProductSchema } from '../utils/validationSchemas.js'
 
 const router = express.Router()
-const prisma = new PrismaClient()
 
 // Create Product (Sellers only)
 router.post('/', authenticateToken, upload.single('image'), async (req, res) => {

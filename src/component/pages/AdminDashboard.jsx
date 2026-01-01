@@ -1,41 +1,96 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
+// Simple admin login UI: when not authenticated, show a login form
+
 function AdminDashboard() {
   const [suppliers, setSuppliers] = useState([])
   const [loading, setLoading] = useState(false)
+  const [token, setToken] = useState(localStorage.getItem('adminToken') || '')
+  const [loginEmail, setLoginEmail] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
+  const [loginError, setLoginError] = useState('')
 
   const API_BASE = 'http://localhost:4000'
 
   function fetchSuppliers() {
     setLoading(true)
-    fetch(`${API_BASE}/api/admin/suppliers`)
-      .then(r => r.json())
-      .then(list => setSuppliers(Array.isArray(list) ? list : []))
+    const headers = token ? { Authorization: `Bearer ${token}` } : {}
+    fetch(`${API_BASE}/api/admin/suppliers`, { headers })
+      .then(async (r) => {
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}))
+          throw new Error(err.error || 'Failed to fetch suppliers')
+        }
+        return r.json()
+      })
+      .then(data => setSuppliers(Array.isArray(data.suppliers) ? data.suppliers : []))
       .catch(err => console.error(err))
       .finally(() => setLoading(false))
   }
 
   useEffect(() => {
-    fetchSuppliers()
-  }, [])
+    if (token) fetchSuppliers()
+  }, [token])
+
+  const handleAdminLogin = async (e) => {
+    e.preventDefault()
+    setLoginError('')
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setLoginError(data.error || 'Login failed')
+        return
+      }
+      localStorage.setItem('adminToken', data.token)
+      setToken(data.token)
+    } catch (err) {
+      setLoginError('Login failed')
+    }
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken')
+    setToken('')
+    setSuppliers([])
+  }
 
   function approveSupplier(id) {
     if (!confirm('Approve this supplier and send temporary password?')) return
-    fetch(`${API_BASE}/api/admin/suppliers/${id}/approve`, { method: 'POST' })
-      .then(r => r.json())
+    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    fetch(`${API_BASE}/api/admin/suppliers/${id}/approve`, { method: 'PATCH', headers })
+      .then(async (r) => {
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}))
+          throw new Error(err.error || 'Failed to approve')
+        }
+        return r.json()
+      })
       .then(() => fetchSuppliers())
       .catch(err => console.error(err))
   }
 
   function rejectSupplier(id) {
-    const reason = prompt('Optional rejection reason')
+    const reason = prompt('Rejection reason (required)')
+    if (!reason) return alert('Rejection reason is required')
+    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     fetch(`${API_BASE}/api/admin/suppliers/${id}/reject`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'PATCH',
+      headers,
       body: JSON.stringify({ reason })
     })
-      .then(r => r.json())
+      .then(async (r) => {
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}))
+          throw new Error(err.error || 'Failed to reject')
+        }
+        return r.json()
+      })
       .then(() => fetchSuppliers())
       .catch(err => console.error(err))
   }
@@ -44,6 +99,31 @@ function AdminDashboard() {
   const suppliersCount = suppliers.length
   const pendingCount = suppliers.filter(s => s.status === 'pending').length
 
+  // If not logged in as admin show login form
+  if (!token) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="w-full max-w-md bg-white p-8 rounded-lg shadow">
+          <h2 className="text-2xl font-bold mb-4">Admin Login</h2>
+          {loginError && <p className="text-red-600 mb-3">{loginError}</p>}
+          <form onSubmit={handleAdminLogin} className="space-y-4">
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Email</label>
+              <input value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} className="w-full px-3 py-2 border rounded" />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Password</label>
+              <input type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} className="w-full px-3 py-2 border rounded" />
+            </div>
+            <div className="flex justify-end">
+              <button type="submit" className="px-4 py-2 bg-black text-white rounded">Sign in</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -51,16 +131,17 @@ function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2">
-              <img 
-                src="/src/assets/images/favicon/favicon.ico" 
-                alt="ProcureNP" 
-                className="h-8 w-auto"
-              />
+                <img
+                  src="/src/assets/images/procure_logo.png"
+                  alt="ProcureNP"
+                  className="h-8 w-auto"
+                />
               <span className="font-semibold text-gray-900">ProcureNP Admin</span>
             </Link>
-            <Link to="/" className="text-gray-600 hover:text-gray-900 text-sm font-medium">
-              Back to site
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link to="/" className="text-gray-600 hover:text-gray-900 text-sm font-medium">Back to site</Link>
+              <button onClick={handleLogout} className="text-sm text-red-600 hover:underline">Logout</button>
+            </div>
           </div>
         </div>
       </div>
@@ -131,9 +212,9 @@ function AdminDashboard() {
                 <tbody className="divide-y divide-gray-200">
                   {suppliers.map(s => (
                     <tr key={s.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900">{s.fullname}</td>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">{s.user?.fullname || '-'}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">{s.companyName}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{s.email}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{s.user?.email || '-'}</td>
                       <td className="px-6 py-4 text-sm">
                         <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
                           s.status === 'pending' ? 'bg-yellow-50 text-yellow-700' :

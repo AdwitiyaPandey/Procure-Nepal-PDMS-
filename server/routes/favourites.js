@@ -1,15 +1,14 @@
 import express from 'express'
-import { PrismaClient } from '@prisma/client'
+import prisma from '../config/prisma.js'
 import { authenticateToken } from '../middleware/auth.js'
 
 const router = express.Router()
-const prisma = new PrismaClient()
 
 // Add product to favorites
 router.post('/add', authenticateToken, async (req, res) => {
   try {
     const { productId } = req.body
-    const userId = req.userId
+    const userId = req.user?.id
 
     if (!productId) {
       return res.status(400).json({ error: 'Product ID is required' })
@@ -61,7 +60,7 @@ router.post('/add', authenticateToken, async (req, res) => {
 router.delete('/:productId', authenticateToken, async (req, res) => {
   try {
     const { productId } = req.params
-    const userId = req.userId
+    const userId = req.user?.id
 
     const favourite = await prisma.favourite.delete({
       where: {
@@ -86,7 +85,7 @@ router.delete('/:productId', authenticateToken, async (req, res) => {
 // Get user's favorites
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const userId = req.userId
+    const userId = req.user?.id
 
     const favourites = await prisma.favourite.findMany({
       where: { userId: userId },
@@ -115,7 +114,7 @@ router.get('/', authenticateToken, async (req, res) => {
 router.get('/check/:productId', authenticateToken, async (req, res) => {
   try {
     const { productId } = req.params
-    const userId = req.userId
+    const userId = req.user?.id
 
     const favourite = await prisma.favourite.findUnique({
       where: {

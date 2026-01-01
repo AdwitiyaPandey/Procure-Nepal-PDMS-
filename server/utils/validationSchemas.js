@@ -3,10 +3,11 @@ import { z } from 'zod'
 export const RegisterBuyerSchema = z.object({
   fullname: z.string().min(2, 'Full name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
-  phone: z.string().regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, 'Invalid phone number'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  // exactly 10 digits
+  phone: z.string().regex(/^\d{10}$/, 'Phone must be exactly 10 digits'),
+  // strong password requirement
+  password: z.string().min(8, 'Password must be at least 8 characters').regex(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)/, 'Password must include uppercase, lowercase, number and special character'),
   confirmPassword: z.string(),
-  profilePhoto: z.any().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'Passwords do not match',
   path: ['confirmPassword'],
@@ -15,17 +16,19 @@ export const RegisterBuyerSchema = z.object({
 export const RegisterSellerSchema = z.object({
   fullname: z.string().min(2, 'Full name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
-  phone: z.string().regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, 'Invalid phone number'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  // exactly 10 digits
+  phone: z.string().regex(/^\d{10}$/, 'Phone must be exactly 10 digits'),
+  // strong password requirement
+  password: z.string().min(8, 'Password must be at least 8 characters').regex(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)/, 'Password must include uppercase, lowercase, number and special character'),
   confirmPassword: z.string(),
   companyName: z.string().min(2, 'Company name must be at least 2 characters'),
-  pan: z.string().min(9, 'PAN must be valid'),
-  vat: z.string().optional(),
-  turnover: z.string().optional(),
-  established: z.string().optional(),
-  citizenship: z.string().optional(),
+  // use numeric-only fields and align keys with frontend form
+  panNumber: z.string().regex(/^\d+$/, 'PAN must contain only numbers').min(9, 'PAN must be at least 9 digits'),
+  vatNumber: z.string().regex(/^\d+$/, 'VAT must contain only numbers').optional(),
+  turnover: z.string().regex(/^\d+$/, 'Turnover must be numeric').optional(),
+  establishedDate: z.string().optional(),
+  citizenship: z.string().regex(/^\d+$/, 'Citizenship must contain only numbers').optional(),
   panVatDoc: z.any().optional(),
-  profilePhoto: z.any().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'Passwords do not match',
   path: ['confirmPassword'],

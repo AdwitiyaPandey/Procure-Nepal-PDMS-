@@ -1,7 +1,11 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, { useState, useEffect, createContext, useContext } from 'react'
 import axios from 'axios'
 
-export const AuthContext = createContext()
+const AuthContext = createContext(null)
+
+export function useAuth() {
+  return useContext(AuthContext)
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -18,7 +22,7 @@ export function AuthProvider({ children }) {
     } else {
       delete axios.defaults.headers.common['Authorization']
     }
-  }, [token])
+  }, [token, API_BASE])
 
   // Initialize user from token on mount
   useEffect(() => {
@@ -38,7 +42,7 @@ export function AuthProvider({ children }) {
       setLoading(false)
     }
     initUser()
-  }, [token])
+  }, [token, API_BASE])
 
   const login = async (email, password) => {
     try {
@@ -142,10 +146,4 @@ export function AuthProvider({ children }) {
   )
 }
 
-export function useAuth() {
-  const context = React.useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider')
-  }
-  return context
-}
+export default AuthContext

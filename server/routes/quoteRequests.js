@@ -1,10 +1,9 @@
 import express from 'express'
-import { PrismaClient } from '@prisma/client'
+import prisma from '../config/prisma.js'
 import { authenticateToken } from '../middleware/auth.js'
 import { QuoteRequestSchema } from '../utils/validationSchemas.js'
 
 const router = express.Router()
-const prisma = new PrismaClient()
 
 // Create quote request
 router.post('/', authenticateToken, async (req, res) => {

@@ -59,6 +59,63 @@ npm run dev    # Development with nodemon
 npm start      # Production
 ```
 
+## Prisma + Supabase (Exact commands)
+
+If you're connecting Prisma to Supabase Postgres, follow these exact commands from the `server/` folder.
+
+- Install dependencies (once):
+```bash
+cd server
+npm install
+```
+
+- Generate Prisma client:
+```bash
+npx prisma generate
+```
+
+- Create and apply migrations (development - creates migration files):
+```bash
+npx prisma migrate dev --name init
+```
+
+- Apply migrations in CI / production (no interactive prompts):
+```bash
+npx prisma migrate deploy
+```
+
+- Quick sync without migration history (useful if you don't need migration history):
+```bash
+npx prisma db push
+```
+
+- Seed database (categories/products):
+```bash
+# optional
+npm run seed
+# or for product demo seed
+node seed-products.js
+```
+
+Notes about EPERM / Windows rename warnings
+- On Windows you may see EPERM errors during `npx prisma generate` complaining about `query_engine-windows.dll.node.tmp` rename failures. Ways to resolve:
+   - Close any running Node processes (stop the server, close React dev server, close terminals that may hold handles).
+   - Close editors/IDEs that might lock files (VS Code sometimes holds file locks on Windows).
+   - Run the terminal as Administrator and re-run `npx prisma generate`.
+   - Manually remove the temporary files and regenerated engine (if safe):
+      ```powershell
+      Remove-Item node_modules\.prisma\client\*.tmp* -Force -ErrorAction SilentlyContinue
+      Remove-Item node_modules\.prisma\client\query_engine-windows.dll.node -Force -ErrorAction SilentlyContinue
+      npx prisma generate
+      ```
+   - If issues persist, rebooting Windows will clear file locks.
+
+Environment variables required for Prisma/Supabase
+- `DATABASE_URL` — your Supabase Postgres connection string
+- `DIRECT_URL` — direct DB connection for migrations (optional)
+- `SUPABASE_SERVICE_ROLE_KEY` — required when using server-side Supabase client features
+
+
 Server runs on `http://localhost:4000`
 
 ## API Endpoints

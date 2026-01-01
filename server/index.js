@@ -4,7 +4,7 @@ dotenv.config()
 import process from 'process'
 import express from 'express'
 import cors from 'cors'
-import { PrismaClient } from '@prisma/client'
+import prisma from './config/prisma.js'
 
 // Import routes
 import authRoutes from './routes/auth.js'
@@ -15,7 +15,6 @@ import adminRoutes from './routes/admin.js'
 import favouriteRoutes from './routes/favourites.js'
 
 const app = express()
-const prisma = new PrismaClient()
 
 // Middleware
 app.use(cors({

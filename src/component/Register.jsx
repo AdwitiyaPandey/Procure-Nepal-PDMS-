@@ -12,7 +12,6 @@ function Register() {
     phone: '',
     password: '',
     confirmPassword: '',
-    profilePhoto: null,
   })
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({})
@@ -20,12 +19,8 @@ function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     const handleChange = (e) => {
-    const { name, value, files } = e.target
-    if (files) {
-      setForm(prev => ({ ...prev, [name]: files[0] }))
-    } else {
-      setForm(prev => ({ ...prev, [name]: value }))
-    }
+    const { name, value } = e.target
+    setForm(prev => ({ ...prev, [name]: value }))
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }))
     }
@@ -53,9 +48,7 @@ function Register() {
       formData.append('phone', form.phone)
       formData.append('password', form.password)
       formData.append('confirmPassword', form.confirmPassword)
-      if (form.profilePhoto) {
-        formData.append('profilePhoto', form.profilePhoto)
-      }
+      // No profile photo field on buyer registration (handled on profile later)
 
       await register(formData, 'buyer')
       navigate('/')
@@ -71,10 +64,9 @@ function Register() {
       {/* Left Side - Brand Section (Hidden on mobile) */}
       <div className="hidden md:flex md:w-1/2 bg-black text-white flex-col justify-center items-center p-8">
         <div className="mb-8">
-          <img src="/src/assets/images/favicon/favicon.ico" alt="ProcureNP Logo" className="h-16 w-16 mx-auto mb-4" />
+          <img src="/src/assets/images/procure_logo.png" alt="ProcureNP Logo" className="h-16 w-auto mx-auto mb-4" />
           <p className="text-center text-xl font-bold">ProcureNP</p>
         </div>
-        <img src="/wb-logo.svg" alt="WB Logo" className="h-24 w-24 mb-8" />
         <p className="text-gray-300 text-lg text-center mb-8">
           Join Nepal's trusted wholesale community
         </p>
@@ -99,7 +91,7 @@ function Register() {
         <div className="w-full max-w-md">
           <div className="mb-8">
             <Link to="/" className="inline-flex items-center gap-2 mb-6 md:hidden hover:opacity-70 transition-opacity duration-300">
-              <img src="/src/assets/images/favicon/favicon.ico" alt="ProcureNP" className="h-10 w-10" />
+              <img src="/src/assets/images/procure_logo.png" alt="ProcureNP" className="h-10 w-auto" />
             </Link>
             <Link to="/" className="inline-flex items-center gap-2 mb-4 text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
               <i className="bi bi-arrow-left"></i>
@@ -168,8 +160,12 @@ function Register() {
                 name="phone"
                 value={form.phone}
                 onChange={handleChange}
-                type="tel"
-                placeholder="+977 98XXXXXXXX"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={10}
+                placeholder="98XXXXXXXX"
+                onKeyDown={(e) => { if (e.key.length === 1 && !/[0-9]/.test(e.key)) e.preventDefault() }}
                 className={`w-full px-4 py-2.5 bg-gray-50 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
                   errors.phone ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-black'
                 }`}
@@ -179,29 +175,7 @@ function Register() {
               )}
             </div>
 
-            {/* Profile Photo - Optional */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Profile Photo <span className="text-gray-500 font-normal">(Optional)</span></label>
-              <div className={`relative border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
-                errors.profilePhoto ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-              }`}>
-                <input 
-                  name="profilePhoto"
-                  onChange={handleChange}
-                  type="file"
-                  accept="image/*"
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                />
-                <div className="py-2">
-                  <i className="bi bi-cloud-upload text-2xl text-gray-400"></i>
-                  <p className="text-sm text-gray-600 mt-1">Click to upload or drag and drop</p>
-                  <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
-                </div>
-              </div>
-              {errors.profilePhoto && (
-                <p className="text-red-500 text-sm mt-1">{errors.profilePhoto}</p>
-              )}
-            </div>
+            {/* Profile Photo intentionally removed from buyer registration (handled in profile later) */}
 
             {/* Password */}
             <div>

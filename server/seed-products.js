@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client'
+import prisma from './config/prisma.js'
 import fs from 'fs'
 import path from 'path'
 import process from 'process'
 
-const prisma = new PrismaClient()
+ 
 
 async function seedProducts() {
   try {

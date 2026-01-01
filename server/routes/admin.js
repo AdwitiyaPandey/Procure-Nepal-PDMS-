@@ -1,11 +1,10 @@
 import express from 'express'
-import { PrismaClient } from '@prisma/client'
+import prisma from '../config/prisma.js'
 import { authenticateToken } from '../middleware/auth.js'
 import fs from 'fs'
 import path from 'path'
 
 const router = express.Router()
-const prisma = new PrismaClient()
 
 // Middleware to check if user is admin
 async function isAdmin(req, res, next) {

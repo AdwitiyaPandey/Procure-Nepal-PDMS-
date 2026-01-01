@@ -32,13 +32,26 @@ function Categories() {
   const fetchCategories = async () => {
     try {
       const res = await fetch('http://localhost:4000/api/categories')
-      const data = await res.json()
-      // Handle both string arrays and object arrays from API
-      if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'object') {
-        setCategories(data.map(cat => cat.name))
-      } else {
-        setCategories(data)
+      if (!res.ok) {
+        const errBody = await res.text().catch(() => '')
+        throw new Error(`Categories API error: ${res.status} ${res.statusText} ${errBody}`)
       }
+      const data = await res.json()
+      // Normalize to an array of category names
+      let names = []
+      if (Array.isArray(data) && data.length > 0) {
+        // API returns array of objects or array of strings
+        if (typeof data[0] === 'object') {
+          names = data.map(cat => cat.name)
+        } else {
+          names = data
+        }
+      } else if (Array.isArray(data.categories)) {
+        names = data.categories.map(cat => (typeof cat === 'object' ? cat.name : cat))
+      } else {
+        names = []
+      }
+      setCategories(names)
     } catch (err) {
       console.error('Error fetching categories:', err)
       // Fallback to some default categories
@@ -94,3 +107,4 @@ function Categories() {
 }
 
 export default Categories
+// Commit: 2026-01-01 Ujjwal

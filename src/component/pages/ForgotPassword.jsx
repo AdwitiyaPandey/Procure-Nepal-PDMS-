@@ -127,10 +127,10 @@ const ForgotPassword = () => {
       {/* Left Side - Brand Section */}
       <div className="hidden md:flex md:w-1/2 bg-black text-white flex-col justify-center items-center p-8">
         <div className="mb-8">
-          <img src="/src/assets/images/favicon/android-chrome-192x192.png" alt="ProcureNP Logo" className="h-16 w-16 mx-auto mb-4" />
+          <img src="src\assets\images\procure_logo.png" alt="ProcureNP Logo" className="h-16 w-16 mx-auto mb-4" />
           <p className="text-center text-xl font-bold">ProcureNP</p>
         </div>
-        <img src="/wb-logo.svg" alt="WB Logo" className="h-24 w-24 mb-8" />
+        
         <p className="text-gray-300 text-lg text-center mb-8">
           Reset your password securely using OTP
         </p>

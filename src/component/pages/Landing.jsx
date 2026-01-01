@@ -32,7 +32,7 @@ function Landing() {
                     <div className="flex items-center justify-between h-16">
                         {/* Logo Section */}
                         <Link to="/" className="flex items-center gap-2 flex-shrink-0 group hover:opacity-70 transition-opacity duration-300">
-                            <img src="/src/assets/images/favicon/favicon.ico" alt="ProcureNP" className="h-10 w-10" />
+                              <img src="/src/assets/images/procure_logo.png" alt="ProcureNP" className="h-10 w-auto" />
                         </Link>
 
                         {/* Search Bar - Center - Hidden on mobile */}

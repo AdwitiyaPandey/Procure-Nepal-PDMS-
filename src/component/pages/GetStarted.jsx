@@ -19,7 +19,7 @@ const GetStarted = () => {
     turnover: '',
     password: '',
     confirmPassword: '',
-    profilePhoto: null
+    // profilePhoto removed; upload handled later in profile settings
   })
   
   const [errors, setErrors] = useState({})
@@ -30,12 +30,8 @@ const GetStarted = () => {
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target
-    
-    if (type === 'file') {
-      setForm(prev => ({ ...prev, [name]: files[0] }))
-    } else {
-      setForm(prev => ({ ...prev, [name]: value }))
-    }
+    // No file inputs on this flow anymore; treat everything as value
+    setForm(prev => ({ ...prev, [name]: value }))
     
     // Clear error for this field
     if (errors[name]) {
@@ -104,7 +100,6 @@ const GetStarted = () => {
     }
 
     setLoading(true)
-
     try {
       const formData = new FormData()
       formData.append('fullname', form.fullname)
@@ -117,12 +112,9 @@ const GetStarted = () => {
       formData.append('establishedDate', form.establishedDate)
       formData.append('turnover', form.turnover)
       formData.append('password', form.password)
-      if (form.profilePhoto) {
-        formData.append('profilePhoto', form.profilePhoto)
-      }
 
       await register(formData, 'seller')
-      navigate('/')
+      navigate('/seller-dashboard')
     } catch (error) {
       setErrors({ general: error.message })
     } finally {
@@ -130,23 +122,23 @@ const GetStarted = () => {
     }
   }
 
-
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-black text-white py-4 px-4 md:px-8 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity duration-300">
-          <img src="/src/assets/images/favicon/favicon.ico" alt="ProcureNP" className="h-8 w-8" />
-          <span className="font-semibold text-lg">ProcureNP</span>
-        </Link>
-        <div className="flex items-center gap-4">
-          <Link to="/" className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition-colors text-sm font-medium">
-            <i className="bi bi-arrow-left"></i>
-            <span>Back to Home</span>
+      <header className="border-b border-gray-200">
+        <div className="max-w-2xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
+          <Link to="/" className="text-2xl font-bold text-gray-900">
+            ProcureNP
           </Link>
-          <p className="text-sm text-gray-300">Step {step} of 3</p>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
+              <i className="bi bi-arrow-left"></i>
+              <span>Back to Home</span>
+            </Link>
+            <p className="text-sm text-gray-500">Step {step} of 3</p>
+          </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Content */}
       <div className="max-w-2xl mx-auto px-4 md:px-8 py-8 md:py-12">

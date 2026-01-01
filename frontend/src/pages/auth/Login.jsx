@@ -6,24 +6,50 @@ import "../../css/auth.css"; // Make sure the path to your CSS is correct
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const submit = async (e) => {
     e.preventDefault();
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
-      alert(`Logged in as ${data.role}`);
-      navigate(data.role === "buyer" ? "/buyer" : "/supplier");
-    } else {
-      alert(data.error || "An error occurred.");
+    try {
+      let res, data;
+      if (isAdmin) {
+        res = await fetch("/api/admin/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: email, password }),
+        });
+        data = await res.json();
+        if (res.ok) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("role", "admin");
+          alert("Logged in as admin");
+          navigate("/admin");
+          return;
+        } else {
+          alert(data.message || "Admin login failed");
+          return;
+        }
+      }
+
+      res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      data = await res.json();
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+        alert(`Logged in as ${data.role}`);
+        navigate(data.role === "buyer" ? "/buyer" : "/supplier");
+      } else {
+        alert(data.error || "An error occurred.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Login failed");
     }
   };
 
@@ -51,6 +77,15 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input
+                id="admin-checkbox"
+                type="checkbox"
+                checked={isAdmin}
+                onChange={() => setIsAdmin(!isAdmin)}
+              />
+              <label htmlFor="admin-checkbox">Admin login</label>
+            </div>
             <div className="password-container">
               <input
                 type={showPassword ? "text" : "password"}

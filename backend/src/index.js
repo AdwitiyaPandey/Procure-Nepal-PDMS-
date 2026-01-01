@@ -20,6 +20,7 @@ const path = require("path");
 
 const authRoutes = require("./routes/auth.routes");
 const dashboardRoutes = require("./routes/dashboard.routes");
+const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/buyer", require("./routes/buyer.routes"));
 app.use("/api/supplier", require("./routes/supplier.routes"));
 

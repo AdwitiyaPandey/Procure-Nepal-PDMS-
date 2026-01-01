@@ -14,6 +14,7 @@ import React from 'react'
 import Landingbanner from './component/Landingbanner'
 import Login from './component/Login'
 import Register from './component/Register'
+import ForgetPassword from './component/ForgetPassword'
 import SupplierDashboard from './component/SupplierDashboard'
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/request-quote/:id" element={<RequestQuote />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forget-password" element= {<ForgetPassword />} />
           <Route path="/contact-seller/:id" element={<RequestQuote />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/supplier-dashboard" element={<SupplierDashboard />} />

@@ -94,7 +94,7 @@ function Login() {
                 <input type="checkbox" className="w-4 h-4 text-teal-600 rounded" />
                 <span className="ml-2 text-gray-600">Remember me</span>
               </label>
-              <a href="#" className="text-teal-600 hover:text-teal-700 font-medium">Forgot password?</a>
+              <Link to="/forget-password" className="text-teal-600 hover:text-teal-700 font-medium">Forgot password?</Link>
             </div>
 
             <button 

@@ -1,9 +1,11 @@
 
 .dashboard {
-  padding: 40px;
+  padding: 40px 20px;
   background: #f9fafb;
   min-height: 100vh;
   color: #1f2937;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .dashboard h2 {
@@ -16,6 +18,7 @@
   border-radius: 10px;
   border: 1px solid #e5e7eb;
   margin-bottom: 20px;
+  box-shadow: 0 6px 14px rgba(15,23,42,0.04);
 }
 
 .card h3 {

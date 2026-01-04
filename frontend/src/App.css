@@ -1,8 +1,13 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1.5rem;
   text-align: center;
+}
+
+/* App-level container to keep content from touching edges on small screens */
+.app-container {
+  padding: 0 12px;
 }
 
 .logo {

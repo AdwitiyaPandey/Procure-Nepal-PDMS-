@@ -224,7 +224,7 @@ app.get('/api/users/:uid', (req, res) => {
 // PRODUCT ENDPOINTS
 app.post('/api/products', upload.single('image'), (req, res) => {
   try {
-    const { uid, name, description, category, price, quantity } = req.body
+    const { uid, name, description, category, price, quantity, marginPercentage } = req.body
     if (!uid || !name || !price) {
       return res.status(400).json({ error: 'Missing required fields' })
     }
@@ -237,6 +237,7 @@ app.post('/api/products', upload.single('image'), (req, res) => {
       category: category || 'General',
       price: parseFloat(price),
       quantity: parseInt(quantity) || 0,
+      marginPercentage: parseFloat(marginPercentage) || 20, // Default 20% margin
       image: req.file ? `/uploads/${path.basename(req.file.path)}` : null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -256,7 +257,62 @@ app.post('/api/products', upload.single('image'), (req, res) => {
 app.get('/api/products', (req, res) => {
   try {
     const products = readProducts()
-    res.json(products)
+    const { q, category, minPrice, maxPrice, sort, limit, offset } = req.query
+    
+    let filtered = products
+    
+    // Search filter
+    if (q) {
+      const query = q.toLowerCase()
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(query) || 
+        p.description.toLowerCase().includes(query) ||
+        p.category.toLowerCase().includes(query)
+      )
+    }
+    
+    // Category filter
+    if (category) {
+      filtered = filtered.filter(p => p.category === category)
+    }
+    
+    // Price filters
+    if (minPrice) {
+      filtered = filtered.filter(p => p.price >= parseFloat(minPrice))
+    }
+    if (maxPrice) {
+      filtered = filtered.filter(p => p.price <= parseFloat(maxPrice))
+    }
+    
+    // Sort
+    if (sort) {
+      if (sort === 'price_asc') {
+        filtered.sort((a, b) => a.price - b.price)
+      } else if (sort === 'price_desc') {
+        filtered.sort((a, b) => b.price - a.price)
+      } else if (sort === 'newest') {
+        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      }
+    }
+    
+    // Pagination
+    const total = filtered.length
+    const limitNum = limit ? parseInt(limit) : 20
+    const offsetNum = offset ? parseInt(offset) : 0
+    filtered = filtered.slice(offsetNum, offsetNum + limitNum)
+    
+    res.json({ products: filtered, total, limit: limitNum, offset: offsetNum })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+app.get('/api/categories', (req, res) => {
+  try {
+    const products = readProducts()
+    const categories = [...new Set(products.map(p => p.category))].sort()
+    res.json(categories)
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Server error' })
@@ -276,7 +332,7 @@ app.get('/api/products/supplier/:uid', (req, res) => {
 
 app.put('/api/products/:id', upload.single('image'), (req, res) => {
   try {
-    const { name, description, category, price, quantity } = req.body
+    const { name, description, category, price, quantity, marginPercentage } = req.body
     const products = readProducts()
     const idx = products.findIndex(p => p.id === req.params.id)
     
@@ -287,6 +343,7 @@ app.put('/api/products/:id', upload.single('image'), (req, res) => {
     products[idx].category = category || products[idx].category
     if (price) products[idx].price = parseFloat(price)
     if (quantity) products[idx].quantity = parseInt(quantity)
+    if (marginPercentage) products[idx].marginPercentage = parseFloat(marginPercentage)
     if (req.file) products[idx].image = `/uploads/${path.basename(req.file.path)}`
     products[idx].updatedAt = new Date().toISOString()
 

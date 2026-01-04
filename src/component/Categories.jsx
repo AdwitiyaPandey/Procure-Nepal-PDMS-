@@ -1,22 +1,54 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const categories = [
-  { id: 1, name: 'Building & Construction', icon: '🏗️', image: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=300&h=300&fit=crop' },
-  { id: 2, name: 'Industrial Supplies And Machinery', icon: '⚙️', image: 'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=300&h=300&fit=crop' },
-  { id: 3, name: 'Hospital And Diagnosis Instrument', icon: '🏥', image: 'https://images.unsplash.com/photo-1576091160550-112173f7f869?w=300&h=300&fit=crop' },
-  { id: 4, name: 'Food, Beverage And Health Supplements', icon: '🥗', image: 'https://images.unsplash.com/photo-1542621334-a254cf16f737?w=300&h=300&fit=crop' },
-  { id: 5, name: 'Computer & IT Solutions', icon: '💻', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=300&h=300&fit=crop' },
-  { id: 6, name: 'Consumer Electronics', icon: '📱', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop' },
-  { id: 7, name: 'Fashion Accessories & Gears', icon: '👗', image: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=300&h=300&fit=crop' },
-  { id: 8, name: 'Textiles & Fabrics', icon: '🧵', image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300&h=300&fit=crop' },
-]
+const categoryIcons = {
+  'Agriculture & Food': '🌾',
+  'Metal & Machinery': '⚙️',
+  'Textiles & Apparel': '👕',
+  'Construction Materials': '🏗️',
+  'Chemicals & Plastics': '🧪',
+  'Handicrafts': '🎨',
+  'Spices & Condiments': '🌶️',
+  'Electronics & IT': '💻'
+}
 
 function Categories() {
   const navigate = useNavigate()
+  const [categories, setCategories] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch('http://localhost:4000/api/categories')
+      const data = await res.json()
+      setCategories(data)
+    } catch (err) {
+      console.error('Error fetching categories:', err)
+      // Fallback to some default categories
+      setCategories(['Agriculture & Food', 'Metal & Machinery', 'Textiles & Apparel', 'Construction Materials'])
+    } finally {
+      setLoading(false)
+    }
+  }
 
   function handleCategoryClick(categoryName) {
-    navigate(`/search?q=${encodeURIComponent(categoryName)}`)
+    navigate(`/search?category=${encodeURIComponent(categoryName)}`)
+  }
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+          </div>
+        </div>
+      </section>
+    )
   }
 
   return (
@@ -28,22 +60,18 @@ function Categories() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {categories.map(cat => (
+          {categories.slice(0, 8).map(cat => (
             <div
-              key={cat.id}
-              onClick={() => handleCategoryClick(cat.name)}
+              key={cat}
+              onClick={() => handleCategoryClick(cat)}
               className="group cursor-pointer bg-white border border-teal-300 rounded-lg overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 duration-300"
             >
-              <div className="h-40 overflow-hidden bg-gray-100 border-b border-teal-300">
-                <img 
-                  src={cat.image} 
-                  alt={cat.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+              <div className="h-40 overflow-hidden bg-gray-100 border-b border-teal-300 flex items-center justify-center">
+                <span className="text-6xl">{categoryIcons[cat] || '📦'}</span>
               </div>
               <div className="p-4">
                 <h3 className="text-md font-semibold text-gray-800 group-hover:text-teal-600 transition-colors line-clamp-2">
-                  {cat.name}
+                  {cat}
                 </h3>
               </div>
             </div>

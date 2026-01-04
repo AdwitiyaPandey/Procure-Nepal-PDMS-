@@ -17,6 +17,7 @@ function SupplierDashboard() {
     category: 'General',
     price: '',
     quantity: '',
+    marginPercentage: '20',
     image: null
   })
 
@@ -49,7 +50,7 @@ function SupplierDashboard() {
   }
 
   function resetForm() {
-    setForm({ name: '', description: '', category: 'General', price: '', quantity: '', image: null })
+    setForm({ name: '', description: '', category: 'General', price: '', quantity: '', marginPercentage: '20', image: null })
     setEditingId(null)
     setError('')
   }
@@ -71,6 +72,7 @@ function SupplierDashboard() {
       fd.append('category', form.category)
       fd.append('price', form.price)
       fd.append('quantity', form.quantity)
+      fd.append('marginPercentage', form.marginPercentage)
       if (form.image) fd.append('image', form.image)
 
       let url, method
@@ -109,6 +111,7 @@ function SupplierDashboard() {
       category: product.category,
       price: product.price.toString(),
       quantity: product.quantity.toString(),
+      marginPercentage: (product.marginPercentage || 20).toString(),
       image: null
     })
     setEditingId(product.id)
@@ -225,15 +228,30 @@ function SupplierDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 text-sm font-semibold text-gray-700">Product Image</label>
+                  <label className="block mb-2 text-sm font-semibold text-gray-700">Margin %</label>
                   <input
-                    type="file"
-                    accept="image/*"
-                    name="image"
+                    type="number"
+                    name="marginPercentage"
+                    value={form.marginPercentage}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md"
+                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500"
+                    placeholder="20"
+                    min="0"
+                    max="100"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Estimated retail margin percentage</p>
                 </div>
+              </div>
+
+              <div>
+                <label className="block mb-2 text-sm font-semibold text-gray-700">Product Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="image"
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
               </div>
 
               <div className="flex gap-3">
@@ -276,6 +294,7 @@ function SupplierDashboard() {
                     <th className="p-4">Product Name</th>
                     <th className="p-4">Category</th>
                     <th className="p-4">Price (NPR)</th>
+                    <th className="p-4">Margin</th>
                     <th className="p-4">Quantity</th>
                     <th className="p-4">Actions</th>
                   </tr>
@@ -286,6 +305,7 @@ function SupplierDashboard() {
                       <td className="p-4 font-semibold">{product.name}</td>
                       <td className="p-4 text-sm text-gray-600">{product.category}</td>
                       <td className="p-4 font-semibold text-green-600">{product.price.toLocaleString()}</td>
+                      <td className="p-4 text-sm text-orange-600">{product.marginPercentage || 20}%</td>
                       <td className="p-4">{product.quantity}</td>
                       <td className="p-4 flex gap-2">
                         <button

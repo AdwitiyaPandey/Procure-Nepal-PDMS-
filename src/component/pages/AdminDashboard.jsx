@@ -7,10 +7,6 @@ function AdminDashboard() {
 
   const API_BASE = 'http://localhost:4000'
 
-  useEffect(() => {
-    fetchSuppliers()
-  }, [])
-
   function fetchSuppliers() {
     setLoading(true)
     fetch(`${API_BASE}/api/admin/suppliers`)
@@ -19,6 +15,10 @@ function AdminDashboard() {
       .catch(err => console.error(err))
       .finally(() => setLoading(false))
   }
+
+  useEffect(() => {
+    fetchSuppliers()
+  }, [])
 
   function approveSupplier(id) {
     if (!confirm('Approve this supplier and send temporary password?')) return

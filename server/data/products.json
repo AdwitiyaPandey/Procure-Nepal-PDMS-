@@ -9,7 +9,8 @@
     "quantity": 500,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 26
   },
   {
     "id": "prod-002",
@@ -21,7 +22,8 @@
     "quantity": 300,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 39
   },
   {
     "id": "prod-003",
@@ -33,7 +35,8 @@
     "quantity": 200,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 39
   },
   {
     "id": "prod-004",
@@ -45,7 +48,8 @@
     "quantity": 150,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 32
   },
   {
     "id": "prod-005",
@@ -57,7 +61,8 @@
     "quantity": 100,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 21
   },
   {
     "id": "prod-006",
@@ -69,7 +74,8 @@
     "quantity": 500,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 28
   },
   {
     "id": "prod-007",
@@ -81,7 +87,8 @@
     "quantity": 800,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 18
   },
   {
     "id": "prod-008",
@@ -93,7 +100,8 @@
     "quantity": 200,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 31
   },
   {
     "id": "prod-009",
@@ -105,7 +113,8 @@
     "quantity": 300,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 36
   },
   {
     "id": "prod-010",
@@ -117,7 +126,8 @@
     "quantity": 400,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 22
   },
   {
     "id": "prod-011",
@@ -129,7 +139,8 @@
     "quantity": 250,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 39
   },
   {
     "id": "prod-012",
@@ -141,7 +152,8 @@
     "quantity": 50,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 27
   },
   {
     "id": "prod-013",
@@ -153,7 +165,8 @@
     "quantity": 100,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 13
   },
   {
     "id": "prod-014",
@@ -165,7 +178,8 @@
     "quantity": 150,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 39
   },
   {
     "id": "prod-015",
@@ -177,7 +191,8 @@
     "quantity": 50,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 38
   },
   {
     "id": "prod-016",
@@ -189,7 +204,8 @@
     "quantity": 200,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 33
   },
   {
     "id": "prod-017",
@@ -201,7 +217,8 @@
     "quantity": 400,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 12
   },
   {
     "id": "prod-018",
@@ -213,7 +230,8 @@
     "quantity": 300,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 31
   },
   {
     "id": "prod-019",
@@ -225,7 +243,8 @@
     "quantity": 150,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 24
   },
   {
     "id": "prod-020",
@@ -237,6 +256,7 @@
     "quantity": 500,
     "image": null,
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "marginPercentage": 28
   }
 ]

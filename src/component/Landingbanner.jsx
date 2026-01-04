@@ -5,15 +5,12 @@ function Landingbanner() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchProducts()
-  }, [])
-
   function fetchProducts() {
-    fetch('http://localhost:4000/api/products')
+    fetch('http://localhost:4000/api/products?limit=6')
       .then(r => r.json())
       .then(data => {
-        setProducts(Array.isArray(data) ? data : [])
+        const productList = Array.isArray(data.products) ? data.products : []
+        setProducts(productList)
       })
       .catch(err => {
         console.error(err)
@@ -21,6 +18,10 @@ function Landingbanner() {
       })
       .finally(() => setLoading(false))
   }
+
+  useEffect(() => {
+    fetchProducts()
+  }, [])
 
   if (loading) {
     return (
@@ -33,8 +34,7 @@ function Landingbanner() {
   }
 
   // Split products into sections
-  const featuredProducts = products.slice(0, 6)
-  const newlyAddedProducts = products.slice(6, 12)
+  const newlyAddedProducts = products.slice(0, 6)
 
   return (
     <div className="bg-gray-50">

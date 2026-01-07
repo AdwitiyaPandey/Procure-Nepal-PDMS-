@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useAuth } from "./../AuthContext";
 
 
 function Login() {
@@ -9,6 +10,7 @@ function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { login } = useAuth();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -31,9 +33,14 @@ function Login() {
         email: form.email,
         password: form.password,
       });
+       login(res.data.user);
 
       toast.success(res.data.message || "Login successful!");
-      setTimeout(() => navigate("/register"), 1500);
+      if (res.data.user.role === 'supplier') {
+        navigate("/supplier-dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
       toast.error(err.response?.data?.message || "Login failed");

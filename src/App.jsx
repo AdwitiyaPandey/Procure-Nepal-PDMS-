@@ -21,7 +21,7 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-      <Toaster position="top-right" />
+      <Toaster position="top-center" />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/get-started" element={<GetStarted />} />

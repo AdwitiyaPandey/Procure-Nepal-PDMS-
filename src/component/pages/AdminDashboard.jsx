@@ -5,7 +5,7 @@ function AdminDashboard() {
   const [suppliers, setSuppliers] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const API_BASE = 'http://localhost:4000'
+  const API_BASE = 'http://localhost:5000'
 
   useEffect(() => {
     fetchSuppliers()

@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../AuthContext';
 
 function SignupSupplier() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [form, setForm] = useState({
     fullname: '',
     email: '',
@@ -16,6 +18,7 @@ function SignupSupplier() {
   })
 
   function handleChange(e) {
+    e.preventDefault();
     const { name, value, files } = e.target
     if (files) {
       setForm(prev => ({ ...prev, [name]: files[0] }))
@@ -43,7 +46,7 @@ function SignupSupplier() {
     if (form.citizenship) fd.append('citizenship', form.citizenship)
     if (form.profilePhoto) fd.append('profilePhoto', form.profilePhoto)
 
-    fetch('http://localhost:4000/api/suppliers', {
+    fetch('http://localhost:5000/api/suppliers', {
       method: 'POST',
       body: fd
     })
@@ -51,6 +54,7 @@ function SignupSupplier() {
       .then(data => {
         if (data && data.ok) {
           alert('Supplier signup submitted. Documents pending admin approval.')
+          login(data.user);
           navigate('/')
         } else {
           alert('Submission failed: ' + (data.error || 'unknown'))

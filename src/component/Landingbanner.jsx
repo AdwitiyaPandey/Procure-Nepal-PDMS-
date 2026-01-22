@@ -10,7 +10,7 @@ function Landingbanner() {
   }, [])
 
   function fetchProducts() {
-    fetch('http://localhost:4000/api/products')
+    fetch('http://localhost:5000/api/products')
       .then(r => r.json())
       .then(data => {
         setProducts(Array.isArray(data) ? data : [])

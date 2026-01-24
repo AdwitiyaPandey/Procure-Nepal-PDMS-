@@ -17,10 +17,10 @@ import SupplierDashboard from './component/SupplierDashboard'
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/get-started" element={<GetStarted />} />
+          <Route path="/seller-register" element={<GetStarted />} />
           <Route path="/signup/buyer" element={<SignupBuyer />} />
           <Route path="/signup/supplier" element={<SignupSupplier />} />
           <Route path="/search" element={<SearchResults />} />

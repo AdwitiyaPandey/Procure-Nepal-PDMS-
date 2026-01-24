@@ -373,4 +373,4 @@ app.delete('/api/products/:id', (req, res) => {
 })
 
 const PORT = process.env.PORT || 4000
-app.listen(PORT, () => console.log(`PDMS server listening on port ${PORT}`))
+app.listen(PORT, () => console.log(`ProcureNP server listening on port ${PORT}`))

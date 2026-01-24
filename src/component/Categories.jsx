@@ -44,7 +44,7 @@ function Categories() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
           </div>
         </div>
       </section>
@@ -52,29 +52,27 @@ function Categories() {
   }
 
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="py-16 md:py-20 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Popular Categories</h2>
-          <div className="w-12 h-1 bg-teal-500 rounded-full"></div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Popular Categories</h2>
+          <p className="text-gray-600">Browse products across different industries</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-6">
           {categories.slice(0, 8).map(cat => (
-            <div
+            <button
               key={cat}
               onClick={() => handleCategoryClick(cat)}
-              className="group cursor-pointer bg-white border border-teal-300 rounded-lg overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 duration-300"
+              className="group flex flex-col items-center p-4 md:p-6 bg-white rounded-lg border border-gray-200 hover:border-teal-300 hover:shadow-md transition-all duration-200"
             >
-              <div className="h-40 overflow-hidden bg-gray-100 border-b border-teal-300 flex items-center justify-center">
-                <span className="text-6xl">{categoryIcons[cat] || '📦'}</span>
+              <div className="text-4xl md:text-5xl mb-3 group-hover:scale-110 transition-transform">
+                {categoryIcons[cat] || '📦'}
               </div>
-              <div className="p-4">
-                <h3 className="text-md font-semibold text-gray-800 group-hover:text-teal-600 transition-colors line-clamp-2">
-                  {cat}
-                </h3>
-              </div>
-            </div>
+              <h3 className="text-sm md:text-base font-medium text-gray-900 group-hover:text-black text-center transition-colors line-clamp-2">
+                {cat}
+              </h3>
+            </button>
           ))}
         </div>
       </div>

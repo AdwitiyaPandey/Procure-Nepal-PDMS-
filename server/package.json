@@ -1,7 +1,7 @@
 {
-  "name": "pdms-server",
+  "name": "procurenp-server",
   "version": "1.0.0",
-  "description": "Backend for Procure Nepal PDMS (dev server)",
+  "description": "Backend for Procure Nepal (dev server)",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

@@ -55,19 +55,19 @@ function Landingbanner() {
                       <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     </div>
                   ) : (
-                    <div className="h-40 bg-gradient-to-br from-teal-100 to-teal-50 flex items-center justify-center">
-                      <i className="bi bi-box text-4xl text-teal-300"></i>
+                    <div className="h-40 bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
+                      <i className="bi bi-box text-4xl text-gray-400"></i>
                     </div>
                   )}
                   
                   <div className="p-4">
-                    <h3 className="font-semibold text-gray-800 text-sm line-clamp-2 mb-2 group-hover:text-teal-600 transition-colors">
+                    <h3 className="font-semibold text-gray-800 text-sm line-clamp-2 mb-2 group-hover:text-black transition-colors">
                       {p.name}
                     </h3>
                     <p className="text-xs text-gray-500 mb-3">MOQs: {p.quantity} PCS</p>
                     <Link 
                       to={`/request-quote/${p.id}`} 
-                      className="text-teal-600 hover:text-teal-700 font-semibold text-sm"
+                      className="text-black hover:text-teal-700 font-semibold text-sm"
                     >
                       Ask For Price
                     </Link>
@@ -81,8 +81,8 @@ function Landingbanner() {
                   <p className="text-xl font-bold mb-2">Want to see your product here?</p>
                   <p className="text-sm mb-6">We Will Help You</p>
                   <Link 
-                    to="/get-started" 
-                    className="inline-block bg-white text-teal-600 px-6 py-2 rounded-full font-bold hover:bg-gray-100 transition-colors"
+                    to="/seller-register" 
+                    className="inline-block bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-gray-100 transition-colors"
                   >
                     START POSTING
                   </Link>
@@ -114,19 +114,19 @@ function Landingbanner() {
                       <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     </div>
                   ) : (
-                    <div className="h-40 bg-gradient-to-br from-teal-100 to-teal-50 flex items-center justify-center">
-                      <i className="bi bi-box text-4xl text-teal-300"></i>
+                    <div className="h-40 bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
+                      <i className="bi bi-box text-4xl text-gray-400"></i>
                     </div>
                   )}
                   
                   <div className="p-4">
-                    <h3 className="font-semibold text-gray-800 text-sm line-clamp-2 mb-2 group-hover:text-teal-600 transition-colors">
+                    <h3 className="font-semibold text-gray-800 text-sm line-clamp-2 mb-2 group-hover:text-black transition-colors">
                       {p.name}
                     </h3>
                     <p className="text-xs text-gray-500 mb-3">MOQs: {p.quantity} PCS</p>
                     <Link 
                       to={`/request-quote/${p.id}`} 
-                      className="text-teal-600 hover:text-teal-700 font-semibold text-sm"
+                      className="text-black hover:text-teal-700 font-semibold text-sm"
                     >
                       Ask For Price
                     </Link>

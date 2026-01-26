@@ -74,4 +74,53 @@ router.post('/suppliers', upload.fields([
   }
 });
 
+
+
+router.post('/upgrade-to-seller', upload.fields([
+  { name: 'citizenship', maxCount: 1 },
+  { name: 'profilePhoto', maxCount: 1 }
+]), async (req, res) => {
+  try {
+    const { email, companyName, pan, vat, turnover, established } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    
+    if (!user) {
+      return res.status(404).json({ ok: false, error: 'User not found' });
+    }
+
+    const citizenshipPath = req.files['citizenship'] ? req.files['citizenship'][0].path : user.citizenshipImage;
+    const profilePhotoPath = req.files['profilePhoto'] ? req.files['profilePhoto'][0].path : user.profilePhoto;
+
+   
+    await user.update({
+      role: 'seller',
+      companyName,
+      pan,
+      vat,
+      turnover,
+      established,
+      citizenshipImage: citizenshipPath,
+      profilePhoto: profilePhotoPath,
+      isApproved: false
+    });
+
+    res.json({ 
+      ok: true, 
+      message: 'Application submitted successfully',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: 'seller'
+      }
+    });
+
+  } catch (error) {
+    console.error("Upgrade error:", error);
+    res.status(500).json({ ok: false, error: 'Internal server error' });
+  }
+});
+
+
 module.exports = router;

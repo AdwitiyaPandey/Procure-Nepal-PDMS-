@@ -10,6 +10,7 @@ export default function Register() {
     password: "",
     role: "buyer",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleFormChange = (e) => {
@@ -19,7 +20,7 @@ export default function Register() {
 
   const submit = async (e) => {
     e.preventDefault();
-    const res = await fetch("http://localhost:5000/api/auth/register", {
+    const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
@@ -66,14 +67,23 @@ export default function Register() {
               value={form.email}
               onChange={handleFormChange}
             />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              required
-              value={form.password}
-              onChange={handleFormChange}
-            />
+            <div className="password-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                required
+                value={form.password}
+                onChange={handleFormChange}
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
             <select name="role" value={form.role} onChange={handleFormChange}>
               <option value="buyer">I am a Buyer</option>
               <option value="supplier">I am a Supplier</option>

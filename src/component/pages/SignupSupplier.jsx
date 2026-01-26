@@ -46,24 +46,20 @@ function SignupSupplier() {
     if (form.citizenship) fd.append('citizenship', form.citizenship)
     if (form.profilePhoto) fd.append('profilePhoto', form.profilePhoto)
 
-    fetch('http://localhost:5000/api/suppliers', {
+    fetch('http://localhost:5000/api/suppliers', { // Use 5000
       method: 'POST',
       body: fd
     })
-      .then(r => r.json())
-      .then(data => {
-        if (data && data.ok) {
-          alert('Supplier signup submitted. Documents pending admin approval.')
-          login(data.user);
-          navigate('/')
-        } else {
-          alert('Submission failed: ' + (data.error || 'unknown'))
-        }
-      })
-      .catch(err => {
-        console.error(err)
-        alert('Submission failed')
-      })
+    .then(r => r.json())
+    .then(data => {
+      if (data && data.ok) {
+        alert('Signup successful!');
+        login(data.user); // This updates your Landing page UI!
+        navigate('/');
+      } else {
+        alert('Submission failed: ' + (data.error || 'unknown'));
+      }
+    })
   }
 
   return (

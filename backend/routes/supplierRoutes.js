@@ -2,15 +2,15 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const { User } = require('../models'); 
+const User = require('../models/User'); // Notice no curly braces if it's a default export // Adjust based on your model export
 
-
+// 1. Configure how files are stored
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); 
+    cb(null, 'uploads/'); // Make sure this folder exists
   },
   filename: (req, file, cb) => {
-   
+    // Creates a unique name: timestamp-filename.jpg
     cb(null, Date.now() + '-' + file.originalname);
   }
 });
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ 
   storage: storage,
   fileFilter: (req, file, cb) => {
-  
+    // Accept only images
     const fileTypes = /jpeg|jpg|png|webp/;
     const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
     if (extname) return cb(null, true);
@@ -26,7 +26,7 @@ const upload = multer({
   }
 });
 
-
+// 2. The Route Handler
 router.post('/suppliers', upload.fields([
   { name: 'citizenship', maxCount: 1 },
   { name: 'profilePhoto', maxCount: 1 }
@@ -37,13 +37,12 @@ router.post('/suppliers', upload.fields([
     const citizenshipPath = req.files['citizenship'] ? req.files['citizenship'][0].path : null;
     const profilePhotoPath = req.files['profilePhoto'] ? req.files['profilePhoto'][0].path : null;
 
-   
+
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ ok: false, error: 'User with this email already exists' });
     }
 
-   
     const newSupplier = await User.create({
       name: fullname,
       email: email,
@@ -55,10 +54,9 @@ router.post('/suppliers', upload.fields([
       established,
       citizenshipImage: citizenshipPath,
       profilePhoto: profilePhotoPath,
-      isApproved: false
+      isApproved: false 
     });
 
-   
     res.status(201).json({
       ok: true,
       message: 'Supplier registered successfully',

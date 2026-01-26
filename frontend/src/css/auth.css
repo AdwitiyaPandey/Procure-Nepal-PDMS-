@@ -87,6 +87,32 @@ body {
   gap: 16px;
 }
 
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-container input {
+  flex: 1;
+  padding-right: 60px; /* Space for the button */
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px;
+}
+
+.password-toggle:hover {
+  color: #2563eb;
+}
+
 .auth-form input,
 .auth-form select {
   padding: 12px 14px;

@@ -29,6 +29,7 @@ function SignupSupplier() {
 
   function handleSubmit(e) {
     e.preventDefault()
+    
     // basic client-side validation
     if (!form.fullname || !form.email || !form.companyName) {
       alert('Please fill name, email and company name')
@@ -46,20 +47,17 @@ function SignupSupplier() {
     if (form.citizenship) fd.append('citizenship', form.citizenship)
     if (form.profilePhoto) fd.append('profilePhoto', form.profilePhoto)
 
-    fetch('http://localhost:5000/api/suppliers', { // Use 5000
+    fetch('http://localhost:5000/api/upgrade-to-seller', {
       method: 'POST',
       body: fd
     })
     .then(r => r.json())
     .then(data => {
-      if (data && data.ok) {
-        alert('Signup successful!');
-        login(data.user); // This updates your Landing page UI!
-        navigate('/');
-      } else {
-        alert('Submission failed: ' + (data.error || 'unknown'));
-      }
-    })
+        if(data.ok) {
+            login(data.user); // Update local state to 'seller'
+            navigate('/');
+        }
+    });
   }
 
   return (

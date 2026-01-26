@@ -54,6 +54,7 @@ export default function BuyerDashboard() {
 
         {products.map(p => (
           <div className="product-card" key={p.id}>
+            {p.image && <img src={`/uploads/${p.image}`} alt={p.name} className="product-image" />}
             <h3>{p.name}</h3>
             <p className="supplier">Supplier: {p.supplier_name}</p>
             <p className="price">Rs {p.price}</p>

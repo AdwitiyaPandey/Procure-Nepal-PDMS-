@@ -4,7 +4,6 @@ import { toast, Toaster } from "react-hot-toast";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './AuthContext'
 import Landing from './component/pages/Landing'
-import GetStarted from './component/pages/GetStarted'
 import SignupBuyer from './component/pages/SignupBuyer'
 import SignupSupplier from './component/pages/SignupSupplier'
 import AdminDashboard from './component/pages/AdminDashboard'
@@ -24,7 +23,6 @@ function App() {
       <Toaster position="top-center" />
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/get-started" element={<GetStarted />} />
           <Route path="/signup/buyer" element={<SignupBuyer />} />
           <Route path="/signup/supplier" element={<SignupSupplier />} />
           <Route path="/search" element={<SearchResults />} />

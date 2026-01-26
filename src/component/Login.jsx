@@ -126,9 +126,9 @@ function Login() {
           {/* Signup Link */}
           <p className="text-center text-gray-600 text-sm mt-8">
             Don't have an account? 
-            <Link to="/register" className="text-teal-600 hover:text-teal-700 font-bold ml-1">
+            {/* <Link to="/register" className="text-teal-600 hover:text-teal-700 font-bold ml-1">
               Sign up
-            </Link>
+            </Link> */}
           </p>
 
           {/* Seller CTA */}
@@ -137,10 +137,10 @@ function Login() {
               Want to sell on Procure Nepal?
             </p>
             <Link 
-              to="/get-started" 
+              to="/signup/buyer" 
               className="inline-block bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
             >
-              Become a Seller
+              Sign Up
             </Link>
           </div>
         </div>

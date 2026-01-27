@@ -65,7 +65,7 @@ function Landing() {
                                     <Link to="/login" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">
                                         Login
                                     </Link>
-                                    <Link to="/register" className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg font-medium transition-colors">
+                                    <Link to="/signup/buyer" className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg font-medium transition-colors">
                                         Register
                                     </Link>
                                 </>
@@ -84,7 +84,7 @@ function Landing() {
                                             My Dashboard
                                         </Link>
                                     ) : (
-                                        <Link to="/get-started" className="text-teal-600 hover:text-teal-700 font-medium text-sm transition-colors">
+                                        <Link to="/signup/supplier" className="text-teal-600 hover:text-teal-700 font-medium text-sm transition-colors">
                                             Start Selling
                                         </Link>
                                     )}
@@ -116,7 +116,7 @@ function Landing() {
                             Post Your Requirements
                         </Link>
                         {(!user || user.role !== 'supplier') && (
-                            <Link to="/get-started" className="text-teal-600 hover:text-teal-700 font-bold transition-colors text-sm">
+                            <Link to="/signup/supplier" className="text-teal-600 hover:text-teal-700 font-bold transition-colors text-sm">
                                 Become a seller
                             </Link>
                         )}

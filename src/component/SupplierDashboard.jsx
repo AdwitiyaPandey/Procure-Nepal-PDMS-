@@ -21,6 +21,7 @@ function SupplierDashboard() {
     image: null
   })
 
+  
   const API_BASE = 'http://localhost:4000'
 
   function fetchProducts() {
@@ -143,159 +144,72 @@ function SupplierDashboard() {
   const categories = ['General', 'Agriculture & Food', 'Electronics & IT', 'Textiles & Apparel', 'Metal & Machinery', 'Construction Materials', 'Chemicals & Plastics', 'Handicrafts', 'Spices & Condiments']
 
   return (
-   <div className="min-h-screen bg-gray-100 p-6">
-  <div className="max-w-6xl mx-auto space-y-6">
+   <div className="bg-gray-50">
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-6">Newly Added Products</h2>
 
-    {/* Header */}
-    <div className="flex justify-between items-center">
-      <div>
-        <h1 className="text-2xl font-bold">Supplier Dashboard</h1>
-        <p className="text-gray-500 text-sm">Manage your products</p>
-      </div>
-      <button
-        onClick={() => { setShowForm(!showForm); resetForm() }}
-        className="bg-green-600 text-white px-4 py-2 rounded"
-      >
-        {showForm ? 'Cancel' : '+ Add Product'}
-      </button>
+          {newlyAddedProducts.length ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {newlyAddedProducts.map((p, i) => (
+                <div
+                  key={p.id}
+                  className={`
+                    bg-white border rounded-md overflow-hidden
+                    transition-all duration-500 ease-out
+                    transform
+                    ${visibleIndexes.includes(i) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}
+                    hover:shadow-lg hover:-translate-y-1
+                  `}
+                >
+                  <div className="h-36 bg-gray-100 overflow-hidden">
+                    {p.image ? (
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+                        No Image
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-3">
+                    <p className="font-medium text-sm line-clamp-2">{p.name}</p>
+                    <p className="text-xs text-gray-500 my-1">MOQ: {p.quantity} PCS</p>
+
+                    <Link
+                      to={`/request-quote/${p.id}`}
+                      className="text-sm text-teal-600 font-semibold hover:underline"
+                    >
+                      Ask for Price
+                    </Link>
+                  </div>
+                </div>
+              ))}
+
+              {/* CTA */}
+              <Link
+                to="/seller-register"
+                className={`
+                  bg-teal-600 text-white rounded-md flex flex-col items-center justify-center text-center p-4
+                  transition-all duration-500 ease-out transform
+                  ${visibleIndexes.includes(newlyAddedProducts.length) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}
+                  hover:bg-teal-700 hover:scale-105
+                `}
+              >
+                <p className="font-bold mb-1">Post Your Product</p>
+                <p className="text-sm">Become a Seller</p>
+              </Link>
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center">No products available</p>
+          )}
+        </div>
+      </section>
     </div>
-
-    {/* Form */}
-    {showForm && (
-      <div className="bg-white p-5 rounded shadow space-y-4">
-        <h2 className="font-semibold">
-          {editingId ? 'Edit Product' : 'Add Product'}
-        </h2>
-
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-
-          <input
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            placeholder="Product Name"
-            className="w-full border p-2 rounded"
-            required
-          />
-
-          <select
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          >
-            {categories.map(c => (
-              <option key={c}>{c}</option>
-            ))}
-          </select>
-
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            placeholder="Description"
-            className="w-full border p-2 rounded"
-          />
-
-          <div className="grid grid-cols-3 gap-3">
-            <input
-              type="number"
-              name="price"
-              value={form.price}
-              onChange={handleChange}
-              placeholder="Price (NPR)"
-              className="border p-2 rounded"
-              required
-            />
-            <input
-              type="number"
-              name="quantity"
-              value={form.quantity}
-              onChange={handleChange}
-              placeholder="Qty"
-              className="border p-2 rounded"
-              required
-            />
-            <input
-              type="number"
-              name="marginPercentage"
-              value={form.marginPercentage}
-              onChange={handleChange}
-              placeholder="Margin %"
-              className="border p-2 rounded"
-            />
-          </div>
-
-          <input
-            type="file"
-            name="image"
-            accept="image/*"
-            onChange={handleChange}
-            className="border p-2 rounded w-full"
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-green-600 text-white py-2 rounded"
-          >
-            {loading ? 'Saving...' : 'Save'}
-          </button>
-        </form>
-      </div>
-    )}
-
-    {/* Product List */}
-    <div className="bg-white rounded shadow">
-      <div className="p-4 font-semibold border-b">
-        Products ({products.length})
-      </div>
-
-      {products.length === 0 ? (
-        <p className="p-4 text-gray-500 text-center">No products yet</p>
-      ) : (
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="p-3 text-left">Name</th>
-              <th className="p-3">Category</th>
-              <th className="p-3">Price</th>
-              <th className="p-3">Qty</th>
-              <th className="p-3">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map(p => (
-              <tr key={p.id} className="border-t">
-                <td className="p-3">{p.name}</td>
-                <td className="p-3 text-center">{p.category}</td>
-                <td className="p-3 text-center">{p.price}</td>
-                <td className="p-3 text-center">{p.quantity}</td>
-                <td className="p-3 flex gap-2 justify-center">
-                  <button
-                    onClick={() => startEdit(p)}
-                    className="text-blue-600"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => deleteProduct(p.id)}
-                    className="text-red-600"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
-
-  </div>
-</div>
   )
 }
 

@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
+import { toast } from 'react-toastify'
+
 
 function Login() {
   const navigate = useNavigate()
@@ -16,22 +18,28 @@ function Login() {
   }
 
   async function handleSubmit(e) {
-    e.preventDefault()
-    if (!form.email || !form.password) {
-      setError('Please enter email and password')
-      return
-    }
+  e.preventDefault()
 
-    setLoading(true)
-    try {
-      await login(form.email, form.password)
-      navigate('/')
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
+  if (!form.email || !form.password) {
+    setError('Please enter email and password')
+    return
   }
+
+  setLoading(true)
+  try {
+    await login(form.email, form.password)
+
+    toast.success('Login successful!')
+
+    navigate('/')
+  } catch (err) {
+    setError(err.message)
+
+    toast.error(err.message || 'Login failed')
+  } finally {
+    setLoading(false)
+  }
+}
 
  return (
   <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">

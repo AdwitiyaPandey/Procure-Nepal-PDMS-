@@ -13,11 +13,24 @@ import Landingbanner from './component/Landingbanner'
 import Login from './component/Login'
 import Register from './component/Register'
 import SupplierDashboard from './component/SupplierDashboard'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+
+      <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          pauseOnHover
+          draggable
+          theme="light"
+        />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/seller-register" element={<GetStarted />} />

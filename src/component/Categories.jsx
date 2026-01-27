@@ -52,32 +52,46 @@ function Categories() {
   }
 
   return (
-    <section className="py-16 md:py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Popular Categories</h2>
-          <p className="text-gray-600">Browse products across different industries</p>
-        </div>
+  <section className="bg-gray-50 py-12 md:py-20">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-6">
-          {categories.slice(0, 8).map(cat => (
-            <button
-              key={cat}
-              onClick={() => handleCategoryClick(cat)}
-              className="group flex flex-col items-center p-4 md:p-6 bg-white rounded-lg border border-gray-200 hover:border-teal-300 hover:shadow-md transition-all duration-200"
-            >
-              <div className="text-4xl md:text-5xl mb-3 group-hover:scale-110 transition-transform">
-                {categoryIcons[cat] || '📦'}
-              </div>
-              <h3 className="text-sm md:text-base font-medium text-gray-900 group-hover:text-black text-center transition-colors line-clamp-2">
-                {cat}
-              </h3>
-            </button>
-          ))}
-        </div>
+      {/* Header */}
+      <div className="mb-8 md:mb-12 text-center md:text-left">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+          Popular Categories
+        </h2>
+        <p className="mt-2 text-sm sm:text-base text-gray-600">
+          Browse products across different industries
+        </p>
       </div>
-    </section>
-  )
+
+      {/* Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+        {categories.slice(0, 8).map(cat => (
+          <button
+            key={cat}
+            onClick={() => handleCategoryClick(cat)}
+            className="group bg-white rounded-xl border border-gray-200 p-4 sm:p-5
+                       flex flex-col items-center justify-center
+                       hover:shadow-lg hover:border-black
+                       transition-all duration-300
+                       active:scale-95"
+          >
+            <div className="text-3xl sm:text-4xl md:text-5xl mb-2 sm:mb-3
+                            group-hover:scale-110 transition-transform">
+              {categoryIcons[cat] || '📦'}
+            </div>
+
+            <h3 className="text-xs sm:text-sm md:text-base font-medium text-gray-800 text-center leading-snug">
+              {cat}
+            </h3>
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+)
+
 }
 
 export default Categories

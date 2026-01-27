@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../AuthContext'
-import Landingbanner from '../Landingbanner'
+
 import Categories from '../Categories'
 
 function Landing() {
@@ -65,7 +65,7 @@ function Landing() {
                                     <Link to="/login" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">
                                         Login
                                     </Link>
-                                    <Link to="/signup/buyer" className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg font-medium transition-colors">
+                                    <Link to="/register" className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg font-medium transition-colors">
                                         Register
                                     </Link>
                                 </>
@@ -178,7 +178,7 @@ function Landing() {
 
             {/* CONTENT SECTIONS */}
             <main>
-                <Landingbanner />
+                {/* <Landingbanner /> */}
                 <Categories />
             </main>
         </div>

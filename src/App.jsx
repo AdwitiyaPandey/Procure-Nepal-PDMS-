@@ -23,12 +23,12 @@ function App() {
       <Toaster position="top-center" />
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/signup/buyer" element={<SignupBuyer />} />
+          <Route path="/register" element={<SignupBuyer />} />
           <Route path="/signup/supplier" element={<SignupSupplier />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/request-quote/:id" element={<RequestQuote />} />
           <Route path="/login" element={<Login />} />
-          
+
           <Route path="/forget-password" element= {<ForgetPassword />} />
           <Route path="/contact-seller/:id" element={<RequestQuote />} />
           <Route path="/admin" element={<AdminDashboard />} />

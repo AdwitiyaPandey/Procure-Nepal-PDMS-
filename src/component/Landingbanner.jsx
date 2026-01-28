@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../AuthContext'
 
 function Landingbanner() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [wishlist, setWishlist] = useState(new Set())
+  const { user } = useAuth()
 
   function fetchProducts() {
     fetch('http://localhost:4000/api/products?limit=6')
@@ -21,7 +24,78 @@ function Landingbanner() {
 
   useEffect(() => {
     fetchProducts()
-  }, [])
+    if (user) {
+      loadUserFavourites()
+    }
+  }, [user])
+
+  const loadUserFavourites = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) return
+
+      const res = await fetch('http://localhost:4000/api/favourites', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        const favIds = new Set(data.data?.map(f => f.product.id) || [])
+        setWishlist(favIds)
+      }
+    } catch (err) {
+      console.error('Error loading favourites:', err)
+    }
+  }
+
+  const toggleWishlist = async (productId) => {
+    if (!user) {
+      alert('Please sign in to add products to favourites')
+      return
+    }
+
+    const token = localStorage.getItem('token')
+    const isFavourite = wishlist.has(productId)
+
+    try {
+      if (isFavourite) {
+        // Remove from favourites
+        const res = await fetch(`http://localhost:4000/api/favourites/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+
+        if (res.ok) {
+          const newWishlist = new Set(wishlist)
+          newWishlist.delete(productId)
+          setWishlist(newWishlist)
+        }
+      } else {
+        // Add to favourites
+        const res = await fetch('http://localhost:4000/api/favourites/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ productId })
+        })
+
+        if (res.ok) {
+          const newWishlist = new Set(wishlist)
+          newWishlist.add(productId)
+          setWishlist(newWishlist)
+        }
+      }
+    } catch (err) {
+      console.error('Error toggling favourite:', err)
+      alert('Failed to update favourite status')
+    }
+  }
 
   if (loading) {
     return (
@@ -47,47 +121,56 @@ function Landingbanner() {
           </div>
 
           {newlyAddedProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {newlyAddedProducts.map(p => (
-                <div key={p.id} className="group bg-white rounded-lg border border-teal-200 overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 duration-300">
-                  {p.image ? (
-                    <div className="h-40 bg-gray-100 overflow-hidden">
-                      <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                    </div>
-                  ) : (
-                    <div className="h-40 bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
-                      <i className="bi bi-box text-4xl text-gray-400"></i>
-                    </div>
-                  )}
+                <div key={p.id} className="group bg-white rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                  {/* Image Container with Wishlist Heart */}
+                  <div className="relative h-56 bg-gray-100 overflow-hidden">
+                    {p.image ? (
+                      <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <i className="bi bi-box text-5xl text-gray-400"></i>
+                      </div>
+                    )}
+                    {/* Wishlist Heart Button */}
+                    <button
+                      onClick={() => toggleWishlist(p.id)}
+                      className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-all duration-200"
+                    >
+                      <i className={`bi ${wishlist.has(p.id) ? 'bi-heart-fill' : 'bi-heart'} text-lg ${wishlist.has(p.id) ? 'text-red-500' : 'text-gray-400'}`}></i>
+                    </button>
+                  </div>
                   
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-800 text-sm line-clamp-2 mb-2 group-hover:text-black transition-colors">
+                  {/* Product Details */}
+                  <div className="p-5">
+                    <h3 className="font-bold text-gray-900 text-base line-clamp-2 mb-2 group-hover:text-black transition-colors">
                       {p.name}
                     </h3>
-                    <p className="text-xs text-gray-500 mb-3">MOQs: {p.quantity} PCS</p>
+                    <p className="text-gray-600 text-sm line-clamp-2 mb-4 leading-relaxed">
+                      {p.description || 'High-quality product available for wholesale'}
+                    </p>
+                    
+                    {/* Price */}
+                    <div className="mb-4">
+                      <p className="text-blue-600 font-bold text-lg">
+                        ${(p.price || 0).toLocaleString()}
+                      </p>
+                      {p.marginPercentage && (
+                        <p className="text-xs text-gray-500">Expected Margin: {p.marginPercentage}%</p>
+                      )}
+                    </div>
+                    
+                    {/* Request Quote Button */}
                     <Link 
                       to={`/request-quote/${p.id}`} 
-                      className="text-black hover:text-teal-700 font-semibold text-sm"
+                      className="w-full inline-block text-center bg-black hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 active:scale-95"
                     >
-                      Ask For Price
+                      Request Quote
                     </Link>
                   </div>
                 </div>
               ))}
-
-              {/* Call to Action Card */}
-              <div className="group bg-teal-500 rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-all hover:-translate-y-1 duration-300 flex items-center justify-center min-h-96">
-                <div className="text-center text-white p-6">
-                  <p className="text-xl font-bold mb-2">Want to see your product here?</p>
-                  <p className="text-sm mb-6">We Will Help You</p>
-                  <Link 
-                    to="/seller-register" 
-                    className="inline-block bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-gray-100 transition-colors"
-                  >
-                    START POSTING
-                  </Link>
-                </div>
-              </div>
             </div>
           ) : (
             <div className="text-center py-12">
@@ -106,29 +189,52 @@ function Landingbanner() {
               <div className="w-12 h-1 bg-teal-500 rounded-full"></div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {products.filter(p => p.category === 'Construction & Building').map(p => (
-                <div key={p.id} className="group bg-white rounded-lg border border-teal-200 overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 duration-300">
-                  {p.image ? (
-                    <div className="h-40 bg-gray-100 overflow-hidden">
-                      <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                    </div>
-                  ) : (
-                    <div className="h-40 bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
-                      <i className="bi bi-box text-4xl text-gray-400"></i>
-                    </div>
-                  )}
+                <div key={p.id} className="group bg-white rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                  {/* Image Container with Wishlist Heart */}
+                  <div className="relative h-56 bg-gray-100 overflow-hidden">
+                    {p.image ? (
+                      <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <i className="bi bi-box text-5xl text-gray-400"></i>
+                      </div>
+                    )}
+                    {/* Wishlist Heart Button */}
+                    <button
+                      onClick={() => toggleWishlist(p.id)}
+                      className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-all duration-200"
+                    >
+                      <i className={`bi ${wishlist.has(p.id) ? 'bi-heart-fill' : 'bi-heart'} text-lg ${wishlist.has(p.id) ? 'text-red-500' : 'text-gray-400'}`}></i>
+                    </button>
+                  </div>
                   
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-800 text-sm line-clamp-2 mb-2 group-hover:text-black transition-colors">
+                  {/* Product Details */}
+                  <div className="p-5">
+                    <h3 className="font-bold text-gray-900 text-base line-clamp-2 mb-2 group-hover:text-black transition-colors">
                       {p.name}
                     </h3>
-                    <p className="text-xs text-gray-500 mb-3">MOQs: {p.quantity} PCS</p>
+                    <p className="text-gray-600 text-sm line-clamp-2 mb-4 leading-relaxed">
+                      {p.description || 'High-quality product available for wholesale'}
+                    </p>
+                    
+                    {/* Price */}
+                    <div className="mb-4">
+                      <p className="text-blue-600 font-bold text-lg">
+                        ${(p.price || 0).toLocaleString()}
+                      </p>
+                      {p.marginPercentage && (
+                        <p className="text-xs text-gray-500">Expected Margin: {p.marginPercentage}%</p>
+                      )}
+                    </div>
+                    
+                    {/* Request Quote Button */}
                     <Link 
                       to={`/request-quote/${p.id}`} 
-                      className="text-black hover:text-teal-700 font-semibold text-sm"
+                      className="w-full inline-block text-center bg-black hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 active:scale-95"
                     >
-                      Ask For Price
+                      Request Quote
                     </Link>
                   </div>
                 </div>

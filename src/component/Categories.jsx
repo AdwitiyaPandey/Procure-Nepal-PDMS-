@@ -9,7 +9,15 @@ const categoryIcons = {
   'Chemicals & Plastics': '🧪',
   'Handicrafts': '🎨',
   'Spices & Condiments': '🌶️',
-  'Electronics & IT': '💻'
+  'Electronics & IT': '💻',
+  'Pharmaceuticals': '💊',
+  'Energy & Utilities': '⚡',
+  'Automotive': '🚗',
+  'Furniture & Decor': '🪑',
+  'Leather & Accessories': '👜',
+  'Paper & Packaging': '📦',
+  'Beauty & Personal Care': '💄',
+  'Home Appliances': '🏠'
 }
 
 function Categories() {
@@ -25,11 +33,16 @@ function Categories() {
     try {
       const res = await fetch('http://localhost:4000/api/categories')
       const data = await res.json()
-      setCategories(data)
+      // Handle both string arrays and object arrays from API
+      if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'object') {
+        setCategories(data.map(cat => cat.name))
+      } else {
+        setCategories(data)
+      }
     } catch (err) {
       console.error('Error fetching categories:', err)
       // Fallback to some default categories
-      setCategories(['Agriculture & Food', 'Metal & Machinery', 'Textiles & Apparel', 'Construction Materials'])
+      setCategories(['Agriculture & Food', 'Metal & Machinery', 'Textiles & Apparel', 'Construction Materials', 'Chemicals & Plastics', 'Electronics & IT', 'Handicrafts', 'Spices & Condiments', 'Pharmaceuticals', 'Energy & Utilities', 'Automotive', 'Furniture & Decor', 'Leather & Accessories', 'Paper & Packaging', 'Beauty & Personal Care', 'Home Appliances'])
     } finally {
       setLoading(false)
     }
@@ -59,8 +72,8 @@ function Categories() {
           <p className="text-gray-600">Browse products across different industries</p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-6">
-          {categories.slice(0, 8).map(cat => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-6">
+          {categories.slice(0, 16).map(cat => (
             <button
               key={cat}
               onClick={() => handleCategoryClick(cat)}

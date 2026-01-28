@@ -8,11 +8,13 @@ import SignupSupplier from './component/pages/SignupSupplier'
 import AdminDashboard from './component/pages/AdminDashboard'
 import SearchResults from './component/pages/SearchResults'
 import RequestQuote from './component/pages/RequestQuote'
+import Favourites from './component/pages/Favourites'
 import React from 'react' 
 import Landingbanner from './component/Landingbanner'
 import Login from './component/Login'
 import Register from './component/Register'
 import SupplierDashboard from './component/SupplierDashboard'
+import ForgotPassword from './component/pages/ForgotPassword'
 
 function App() {
   return (
@@ -20,14 +22,16 @@ function App() {
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/seller-register" element={<GetStarted />} />
           <Route path="/signup/buyer" element={<SignupBuyer />} />
           <Route path="/signup/supplier" element={<SignupSupplier />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/request-quote/:id" element={<RequestQuote />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/contact-seller/:id" element={<RequestQuote />} />
+          <Route path="/favourites" element={<Favourites />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
         </Routes>

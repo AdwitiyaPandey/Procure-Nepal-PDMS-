@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [token, setToken] = useState(localStorage.getItem('token'))
+  const [error, setError] = useState(null)
 
   const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:4000'
 
@@ -24,18 +25,11 @@ export function AuthProvider({ children }) {
     const initUser = async () => {
       if (token) {
         try {
-          // Decode token to get user info (basic JWT decoding)
-          const parts = token.split('.')
-          if (parts.length === 3) {
-            const decoded = JSON.parse(atob(parts[1]))
-            setUser({
-              id: decoded.id,
-              email: decoded.email,
-              role: decoded.role
-            })
-          }
+          const response = await axios.get(`${API_BASE}/api/auth/me`)
+          setUser(response.data.user)
+          setError(null)
         } catch (error) {
-          console.error('Invalid token:', error)
+          console.error('Failed to fetch user:', error)
           localStorage.removeItem('token')
           setToken(null)
           setUser(null)
@@ -48,6 +42,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
+      setError(null)
       const response = await axios.post(`${API_BASE}/api/auth/login`, {
         email,
         password
@@ -59,24 +54,18 @@ export function AuthProvider({ children }) {
       setUser(userData)
       return response.data
     } catch (error) {
-      throw new Error(error.response?.data?.error || 'Login failed')
+      const errorMessage = error.response?.data?.error || 'Login failed'
+      setError(errorMessage)
+      throw new Error(errorMessage)
     }
   }
 
-  const register = async (fullname, email, phone, password, confirmPassword, role = 'buyer', profilePhoto = null) => {
+  const register = async (formData, role = 'buyer') => {
     try {
-      const formData = new FormData()
-      formData.append('fullname', fullname)
-      formData.append('email', email)
-      formData.append('phone', phone)
-      formData.append('password', password)
-      formData.append('confirmPassword', confirmPassword)
-      formData.append('role', role)
-      if (profilePhoto) {
-        formData.append('profilePhoto', profilePhoto)
-      }
+      setError(null)
+      const endpoint = role === 'seller' ? 'register/seller' : 'register/buyer'
 
-      const response = await axios.post(`${API_BASE}/api/auth/register`, formData, {
+      const response = await axios.post(`${API_BASE}/api/auth/${endpoint}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
 
@@ -86,7 +75,39 @@ export function AuthProvider({ children }) {
       setUser(userData)
       return response.data
     } catch (error) {
-      throw new Error(error.response?.data?.error || 'Registration failed')
+      const errorMessage = error.response?.data?.error || 'Registration failed'
+      setError(errorMessage)
+      throw new Error(errorMessage)
+    }
+  }
+
+  const forgotPassword = async (email) => {
+    try {
+      setError(null)
+      const response = await axios.post(`${API_BASE}/api/auth/forgot-password`, {
+        email
+      })
+      return response.data
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to send reset email'
+      setError(errorMessage)
+      throw new Error(errorMessage)
+    }
+  }
+
+  const resetPassword = async (token, password, confirmPassword) => {
+    try {
+      setError(null)
+      const response = await axios.post(`${API_BASE}/api/auth/reset-password`, {
+        token,
+        password,
+        confirmPassword
+      })
+      return response.data
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to reset password'
+      setError(errorMessage)
+      throw new Error(errorMessage)
     }
   }
 
@@ -94,11 +115,28 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('token')
     setToken(null)
     setUser(null)
+    setError(null)
     delete axios.defaults.headers.common['Authorization']
   }
 
+  const clearError = () => {
+    setError(null)
+  }
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{
+      user,
+      token,
+      loading,
+      error,
+      login,
+      register,
+      logout,
+      forgotPassword,
+      resetPassword,
+      clearError,
+      isAuthenticated: !!user
+    }}>
       {children}
     </AuthContext.Provider>
   )

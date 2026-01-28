@@ -60,12 +60,24 @@ function Landing() {
                                     <Link to="/login" className="text-gray-700 hover:text-gray-900 font-medium text-sm transition-colors duration-300 uppercase">
                                         Sign in
                                     </Link>
+                                    <Link to="/register" className="text-gray-700 hover:text-gray-900 font-medium text-sm transition-colors duration-300 uppercase">
+                                        Sign up
+                                    </Link>
                                     <Link to="/seller-register" className="bg-black hover:bg-gray-900 text-white px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 hover:shadow-lg active:scale-95 uppercase">
-                                        Start selling
+                                        Become a seller
                                     </Link>
                                 </>
                             ) : (
                                 <>
+                                    {/* Favourites Button - Only for logged-in users */}
+                                    <Link 
+                                        to="/favourites" 
+                                        className="relative text-gray-700 hover:text-red-600 font-medium text-sm transition-colors duration-300 flex items-center gap-1 group"
+                                        title="View my favourite products"
+                                    >
+                                        <i className="bi bi-heart text-lg group-hover:scale-110 transition-transform"></i>
+                                        <span className="hidden sm:inline uppercase">Favourites</span>
+                                    </Link>
                                     <div className="hidden sm:flex items-center gap-2 border-r border-gray-200 pr-4">
                                         <i className="bi bi-person-circle text-gray-600"></i>
                                         <span className="text-gray-700 font-medium text-sm">{user.displayName || user.email.split('@')[0]}</span>

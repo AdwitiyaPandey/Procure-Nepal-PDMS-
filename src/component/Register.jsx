@@ -1,63 +1,66 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
+import { BuyerRegistrationSchema, validateFormData } from '../utils/validationSchemas'
 
 function Register() {
   const navigate = useNavigate()
-  const { register } = useAuth()
+  const { register, error: authError, clearError } = useAuth()
   const [form, setForm] = useState({
     fullname: '',
     email: '',
     phone: '',
     password: '',
     confirmPassword: '',
-    profilePhoto: null
+    profilePhoto: null,
   })
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [errors, setErrors] = useState({})
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  function handleChange(e) {
+    const handleChange = (e) => {
     const { name, value, files } = e.target
     if (files) {
       setForm(prev => ({ ...prev, [name]: files[0] }))
     } else {
       setForm(prev => ({ ...prev, [name]: value }))
     }
-    setError('')
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }))
+    }
+    if (authError) {
+      clearError()
+    }
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    if (!form.fullname || !form.email || !form.password || !form.confirmPassword) {
-      setError('All fields are required')
-      return
-    }
 
-    if (form.password.length < 6) {
-      setError('Password must be at least 6 characters')
-      return
-    }
-
-    if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match')
+    const validation = validateFormData(BuyerRegistrationSchema, form)
+    if (!validation.success) {
+      setErrors(validation.errors)
       return
     }
 
     setLoading(true)
+    setErrors({})
+
     try {
-      await register(
-        form.fullname,
-        form.email,
-        form.phone,
-        form.password,
-        form.confirmPassword,
-        'buyer',
-        form.profilePhoto
-      )
+      const formData = new FormData()
+      formData.append('fullname', form.fullname)
+      formData.append('email', form.email)
+      formData.append('phone', form.phone)
+      formData.append('password', form.password)
+      formData.append('confirmPassword', form.confirmPassword)
+      if (form.profilePhoto) {
+        formData.append('profilePhoto', form.profilePhoto)
+      }
+
+      await register(formData, 'buyer')
       navigate('/')
-    } catch (err) {
-      setError(err.message)
+    } catch (error) {
+      setErrors({ general: error.message })
     } finally {
       setLoading(false)
     }
@@ -67,7 +70,11 @@ function Register() {
     <div className="min-h-screen bg-white flex flex-col md:flex-row">
       {/* Left Side - Brand Section (Hidden on mobile) */}
       <div className="hidden md:flex md:w-1/2 bg-black text-white flex-col justify-center items-center p-8">
-        <img src="/src/assets/images/favicon/favicon.ico" alt="ProcureNP" className="h-32 w-32 mb-8" />
+        <div className="mb-8">
+          <img src="/src/assets/images/favicon/favicon.ico" alt="ProcureNP Logo" className="h-16 w-16 mx-auto mb-4" />
+          <p className="text-center text-xl font-bold">ProcureNP</p>
+        </div>
+        <img src="/wb-logo.svg" alt="WB Logo" className="h-24 w-24 mb-8" />
         <p className="text-gray-300 text-lg text-center mb-8">
           Join Nepal's trusted wholesale community
         </p>
@@ -88,25 +95,37 @@ function Register() {
       </div>
 
       {/* Right Side - Registration Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8">
+      <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8 md:overflow-y-auto md:max-h-screen">
         <div className="w-full max-w-md">
           <div className="mb-8">
             <Link to="/" className="inline-flex items-center gap-2 mb-6 md:hidden hover:opacity-70 transition-opacity duration-300">
               <img src="/src/assets/images/favicon/favicon.ico" alt="ProcureNP" className="h-10 w-10" />
             </Link>
+            <Link to="/" className="inline-flex items-center gap-2 mb-4 text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
+              <i className="bi bi-arrow-left"></i>
+              <span>Back to Home</span>
+            </Link>
             <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
             <p className="text-gray-600 mt-2">Sign up to start buying or selling</p>
           </div>
 
-          {/* Error Message */}
-          {error && (
+          {/* General Error Message */}
+          {errors.general && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-700 text-sm font-medium">{error}</p>
+              <p className="text-red-700 text-sm font-medium">{errors.general}</p>
+            </div>
+          )}
+
+          {/* Auth Context Error */}
+          {authError && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700 text-sm font-medium">{authError}</p>
             </div>
           )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Full Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
               <input 
@@ -115,46 +134,130 @@ function Register() {
                 onChange={handleChange}
                 type="text"
                 placeholder="Your full name"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
+                className={`w-full px-4 py-2.5 bg-gray-50 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
+                  errors.fullname ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-black'
+                }`}
               />
+              {errors.fullname && (
+                <p className="text-red-500 text-sm mt-1">{errors.fullname}</p>
+              )}
             </div>
 
+            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
               <input 
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                type="email"
+                type="text"
                 placeholder="you@example.com"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
+                className={`w-full px-4 py-2.5 bg-gray-50 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
+                  errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-black'
+                }`}
               />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
 
+            {/* Phone */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+              <input 
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                type="tel"
+                placeholder="+977 98XXXXXXXX"
+                className={`w-full px-4 py-2.5 bg-gray-50 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
+                  errors.phone ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-black'
+                }`}
+              />
+              {errors.phone && (
+                <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+              )}
+            </div>
+
+            {/* Profile Photo - Optional */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Profile Photo <span className="text-gray-500 font-normal">(Optional)</span></label>
+              <div className={`relative border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
+                errors.profilePhoto ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+              }`}>
+                <input 
+                  name="profilePhoto"
+                  onChange={handleChange}
+                  type="file"
+                  accept="image/*"
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+                <div className="py-2">
+                  <i className="bi bi-cloud-upload text-2xl text-gray-400"></i>
+                  <p className="text-sm text-gray-600 mt-1">Click to upload or drag and drop</p>
+                  <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
+                </div>
+              </div>
+              {errors.profilePhoto && (
+                <p className="text-red-500 text-sm mt-1">{errors.profilePhoto}</p>
+              )}
+            </div>
+
+            {/* Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-              <input 
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                type="password"
-                placeholder="••••••••"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-              />
+              <div className="relative">
+                <input 
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  className={`w-full px-4 py-2.5 bg-gray-50 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
+                    errors.password ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-black'
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'}`}></i>
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
 
+            {/* Confirm Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-              <input 
-                name="confirmPassword"
-                value={form.confirmPassword}
-                onChange={handleChange}
-                type="password"
-                placeholder="••••••••"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-              />
+              <div className="relative">
+                <input 
+                  name="confirmPassword"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  className={`w-full px-4 py-2.5 bg-gray-50 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
+                    errors.confirmPassword ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-black'
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  <i className={`bi ${showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'}`}></i>
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+              )}
             </div>
 
+            {/* Terms Checkbox */}
             <div className="flex items-start gap-2">
               <input type="checkbox" id="terms" className="w-4 h-4 text-black bg-gray-50 border-gray-200 rounded mt-1 cursor-pointer" />
               <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
@@ -162,6 +265,7 @@ function Register() {
               </label>
             </div>
 
+            {/* Submit Button */}
             <button 
               type="submit" 
               disabled={loading}

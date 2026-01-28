@@ -298,7 +298,7 @@ function SupplierDashboard() {
             </div>
           ) : (
             <>
-              {/* 🖥 Desktop Table */}
+              {/* Desktop Table */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -343,7 +343,7 @@ function SupplierDashboard() {
                 </table>
               </div>
 
-              {/* 📱 Mobile Cards */}
+              {/*  Mobile Cards */}
               <div className="md:hidden p-4 space-y-4">
                 {products.map(product => (
                   <div

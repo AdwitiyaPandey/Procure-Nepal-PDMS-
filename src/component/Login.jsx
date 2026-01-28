@@ -40,8 +40,6 @@ function Login() {
       
       if (res.data.user.role === 'admin') {
           navigate("/admin-dashboard");
-      } else if (res.data.user.role === 'seller') {
-          navigate("/supplier-dashboard");
       } else {
           navigate("/");
       }

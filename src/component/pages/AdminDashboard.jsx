@@ -1,113 +1,122 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { toast, Toaster } from 'react-hot-toast';
 
 function AdminDashboard() {
-  const [suppliers, setSuppliers] = useState([])
-  const [loading, setLoading] = useState(false)
-
-  const API_BASE = 'http://localhost:5000'
+  const [pendingSellers, setPendingSellers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchSuppliers()
-  }, [])
+    fetchPendingSellers();
+  }, []);
 
-  function fetchSuppliers() {
-    setLoading(true)
-    fetch(`${API_BASE}/api/admin/suppliers`)
-      .then(r => r.json())
-      .then(list => setSuppliers(Array.isArray(list) ? list : []))
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false))
-  }
+  const fetchPendingSellers = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/admin/pending-sellers');
+      setPendingSellers(res.data);
+    } catch (err) {
+      toast.error("Failed to load applications");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  function approveSupplier(id) {
-    if (!confirm('Approve this supplier and send temporary password?')) return
-    fetch(`${API_BASE}/api/admin/suppliers/${id}/approve`, { method: 'POST' })
-      .then(r => r.json())
-      .then(() => fetchSuppliers())
-      .catch(err => console.error(err))
-  }
+  const handleAction = async (userId, action) => {
+    try {
+      await axios.post('http://localhost:5000/api/admin/verify-seller', { userId, action });
+      toast.success(`Seller ${action}d successfully`);
+      fetchPendingSellers(); // Refresh list
+    } catch (err) {
+      toast.error("Action failed");
+    }
+  };
 
-  function rejectSupplier(id) {
-    const reason = prompt('Optional rejection reason')
-    fetch(`${API_BASE}/api/admin/suppliers/${id}/reject`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reason })
-    })
-      .then(r => r.json())
-      .then(() => fetchSuppliers())
-      .catch(err => console.error(err))
-  }
-
-  const buyersCount = 0
-  const suppliersCount = suppliers.length
-  const pendingCount = suppliers.filter(s => s.status === 'pending').length
+  if (loading) return <div className="p-10 text-center">Loading Applications...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow">
-        <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="p-4 border rounded-lg">
-            <div className="text-sm text-gray-500">Buyers registered</div>
-            <div className="text-2xl font-semibold">{buyersCount}</div>
+    <div className="min-h-screen bg-gray-50 p-6 md:p-10">
+      <Toaster />
+      <div className="max-w-7xl mx-auto">
+        <header className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Admin Control Panel</h1>
+            <p className="text-gray-600">Review and verify new seller applications</p>
           </div>
-          <div className="p-4 border rounded-lg">
-            <div className="text-sm text-gray-500">Suppliers registered</div>
-            <div className="text-2xl font-semibold">{suppliersCount}</div>
+          <div className="bg-teal-100 text-teal-800 px-4 py-2 rounded-full font-bold">
+            {pendingSellers.length} Pending
           </div>
-          <div className="p-4 border rounded-lg">
-            <div className="text-sm text-gray-500">Pending approvals</div>
-            <div className="text-2xl font-semibold">{pendingCount}</div>
-          </div>
-        </div>
+        </header>
 
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Supplier Listings</h2>
-          <p className="text-sm text-gray-600 mb-4">Approve or reject supplier registrations submitted by users.</p>
-
-          {loading ? <div className="py-6">Loading...</div> : (
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="text-left border-b">
-                  <th className="py-2">Name</th>
-                  <th className="py-2">Company</th>
-                  <th className="py-2">Email</th>
-                  <th className="py-2">Status</th>
-                  <th className="py-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {suppliers.map(s => (
-                  <tr key={s.id} className="border-b">
-                    <td className="py-3">{s.fullname}</td>
-                    <td className="py-3">{s.companyName}</td>
-                    <td className="py-3">{s.email}</td>
-                    <td className="py-3">{s.status}</td>
-                    <td className="py-3">
-                      {s.status === 'pending' ? (
-                        <>
-                          <button onClick={() => approveSupplier(s.id)} className="mr-2 px-2 py-1 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-md">Approve</button>
-                          <button onClick={() => rejectSupplier(s.id)} className="px-2 py-1 bg-red-600 text-white rounded-md">Reject</button>
-                        </>
-                      ) : (
-                        <span className="text-sm text-gray-500">No actions</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-
-          <div className="mt-6">
-            <Link to="/" className="text-green-600 underline">Back to site</Link>
+        {pendingSellers.length === 0 ? (
+          <div className="bg-white p-20 rounded-2xl shadow text-center">
+            <i className="bi bi-check2-circle text-6xl text-teal-500 mb-4"></i>
+            <h2 className="text-xl font-semibold text-gray-800">All caught up!</h2>
+            <p className="text-gray-500">No new applications to review.</p>
           </div>
-        </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6">
+            {pendingSellers.map((seller) => (
+              <div key={seller.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                <div className="p-6 md:flex gap-8">
+                  
+                  {/* Business Identity */}
+                  <div className="md:w-1/3 mb-6 md:mb-0">
+                    <h2 className="text-xl font-bold text-gray-900 mb-1">{seller.companyName}</h2>
+                    <p className="text-teal-600 font-medium mb-4">{seller.name}</p>
+                    <div className="space-y-2 text-sm text-gray-600">
+                      <p><span className="font-bold">Email:</span> {seller.email}</p>
+                      <p><span className="font-bold">PAN:</span> {seller.pan}</p>
+                      <p><span className="font-bold">VAT:</span> {seller.vat || 'N/A'}</p>
+                      <p><span className="font-bold">Est:</span> {seller.established}</p>
+                    </div>
+                  </div>
+
+                  {/* Document Review Section */}
+                  <div className="md:w-1/3 flex gap-4 mb-6 md:mb-0">
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-gray-400 uppercase mb-2">Citizenship</p>
+                      <a href={`http://localhost:5000/${seller.citizenshipImage}`} target="_blank" rel="noreferrer">
+                        <img 
+                          src={`http://localhost:5000/${seller.citizenshipImage}`} 
+                          alt="Citizenship" 
+                          className="w-full h-32 object-cover rounded-lg border hover:opacity-80 transition-opacity"
+                        />
+                      </a>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-gray-400 uppercase mb-2">Profile Photo</p>
+                      <img 
+                        src={`http://localhost:5000/${seller.profilePhoto}`} 
+                        alt="Profile" 
+                        className="w-full h-32 object-cover rounded-lg border"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="md:w-1/3 flex flex-col justify-center gap-3">
+                    <button 
+                      onClick={() => handleAction(seller.id, 'approve')}
+                      className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-teal-100"
+                    >
+                      <i className="bi bi-patch-check mr-2"></i> Approve Seller
+                    </button>
+                    <button 
+                      onClick={() => handleAction(seller.id, 'decline')}
+                      className="w-full bg-white border border-red-200 text-red-600 hover:bg-red-50 font-bold py-3 rounded-xl transition-colors"
+                    >
+                      Decline Application
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
-  )
+  );
 }
 
-export default AdminDashboard
+export default AdminDashboard;

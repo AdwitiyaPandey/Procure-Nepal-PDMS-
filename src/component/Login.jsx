@@ -30,16 +30,20 @@ function Login() {
     setLoading(true);
     try {
       const res = await axios.post("http://localhost:5000/api/auth/login", {
-        email: form.email,
-        password: form.password,
+          email: form.email,
+          password: form.password,
       });
-       login(res.data.user);
 
-      toast.success(res.data.message || "Login successful!");
-      if (res.data.user.role === 'supplier') {
-        navigate("/supplier-dashboard");
+      login(res.data.user);
+      toast.success("Login successful!");
+
+      
+      if (res.data.user.role === 'admin') {
+          navigate("/admin-dashboard");
+      } else if (res.data.user.role === 'seller') {
+          navigate("/supplier-dashboard");
       } else {
-        navigate("/");
+          navigate("/");
       }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");

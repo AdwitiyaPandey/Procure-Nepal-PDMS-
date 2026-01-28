@@ -31,7 +31,7 @@ function App() {
 
           <Route path="/forget-password" element= {<ForgetPassword />} />
           <Route path="/contact-seller/:id" element={<RequestQuote />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
         </Routes>
       </BrowserRouter>

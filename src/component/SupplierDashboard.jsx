@@ -276,58 +276,121 @@ function SupplierDashboard() {
 
         {/* Products List */}
         <div className="bg-white rounded-xl shadow">
-          <div className="p-6 border-b">
-            <h2 className="text-xl font-semibold">Your Products ({products.length})</h2>
+          <div className="p-4 sm:p-6 border-b">
+            <h2 className="text-lg sm:text-xl font-semibold">
+              Your Products ({products.length})
+            </h2>
           </div>
 
           {loading && !showForm ? (
             <div className="p-6 text-center text-gray-600">Loading products...</div>
           ) : products.length === 0 ? (
             <div className="p-6 text-center text-gray-600">
-              No products yet. {!showForm && <button onClick={() => setShowForm(true)} className="text-green-600 underline">Add one now</button>}
+              No products yet.
+              {!showForm && (
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="block mt-2 text-green-600 underline"
+                >
+                  Add one now
+                </button>
+              )}
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-left border-b bg-gray-50">
-                    <th className="p-4">Product Name</th>
-                    <th className="p-4">Category</th>
-                    <th className="p-4">Price (NPR)</th>
-                    <th className="p-4">Margin</th>
-                    <th className="p-4">Quantity</th>
-                    <th className="p-4">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map(product => (
-                    <tr key={product.id} className="border-b hover:bg-gray-50">
-                      <td className="p-4 font-semibold">{product.name}</td>
-                      <td className="p-4 text-sm text-gray-600">{product.category}</td>
-                      <td className="p-4 font-semibold text-green-600">{product.price.toLocaleString()}</td>
-                      <td className="p-4 text-sm text-orange-600">{product.marginPercentage || 20}%</td>
-                      <td className="p-4">{product.quantity}</td>
-                      <td className="p-4 flex gap-2">
-                        <button
-                          onClick={() => startEdit(product)}
-                          className="px-3 py-1 bg-blue-600 text-white rounded-md text-sm"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => deleteProduct(product.id)}
-                          className="px-3 py-1 bg-red-600 text-white rounded-md text-sm"
-                        >
-                          Delete
-                        </button>
-                      </td>
+            <>
+              {/* 🖥 Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-left border-b bg-gray-50">
+                      <th className="p-4">Product</th>
+                      <th className="p-4">Category</th>
+                      <th className="p-4">Price</th>
+                      <th className="p-4">Margin</th>
+                      <th className="p-4">Qty</th>
+                      <th className="p-4">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {products.map(product => (
+                      <tr key={product.id} className="border-b hover:bg-gray-50">
+                        <td className="p-4 font-semibold">{product.name}</td>
+                        <td className="p-4 text-sm text-gray-600">{product.category}</td>
+                        <td className="p-4 font-semibold text-green-600">
+                          NPR {product.price.toLocaleString()}
+                        </td>
+                        <td className="p-4 text-orange-600">
+                          {product.marginPercentage || 20}%
+                        </td>
+                        <td className="p-4">{product.quantity}</td>
+                        <td className="p-4 flex gap-2">
+                          <button
+                            onClick={() => startEdit(product)}
+                            className="px-3 py-1 bg-blue-600 text-white rounded-md text-sm"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => deleteProduct(product.id)}
+                            className="px-3 py-1 bg-red-600 text-white rounded-md text-sm"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* 📱 Mobile Cards */}
+              <div className="md:hidden p-4 space-y-4">
+                {products.map(product => (
+                  <div
+                    key={product.id}
+                    className="border rounded-lg p-4 shadow-sm"
+                  >
+                    <h3 className="font-semibold text-lg">{product.name}</h3>
+                    <p className="text-sm text-gray-500">{product.category}</p>
+
+                    <div className="mt-2 text-sm space-y-1">
+                      <p>
+                        <span className="font-medium">Price:</span>{' '}
+                        <span className="text-green-600 font-semibold">
+                          NPR {product.price.toLocaleString()}
+                        </span>
+                      </p>
+                      <p>
+                        <span className="font-medium">Margin:</span>{' '}
+                        {product.marginPercentage || 20}%
+                      </p>
+                      <p>
+                        <span className="font-medium">Quantity:</span>{' '}
+                        {product.quantity}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 flex gap-2">
+                      <button
+                        onClick={() => startEdit(product)}
+                        className="flex-1 bg-blue-600 text-white py-2 rounded-md text-sm"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteProduct(product.id)}
+                        className="flex-1 bg-red-600 text-white py-2 rounded-md text-sm"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
+
       </div>
     </div>
   )

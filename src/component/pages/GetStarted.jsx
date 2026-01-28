@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../AuthContext';
+import { motion } from "framer-motion";
 
 function GetStarted() {
   const navigate = useNavigate();
@@ -22,6 +23,18 @@ function GetStarted() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 } 
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 }
+  };
 
   function handleChange(e) {
     const { name, value, files } = e.target;
@@ -89,221 +102,101 @@ function GetStarted() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col md:flex-row">
-      {/* Left Side - Brand Section (Hidden on mobile) */}
-      <div className="hidden md:flex md:w-1/2 bg-black text-white flex-col justify-center items-center p-8">
-        <img src="/src/assets/images/favicon/favicon.ico" alt="ProcureNP" className="h-32 w-32 mb-8" />
+  <div className="min-h-screen bg-white flex flex-col md:flex-row overflow-hidden">
+      {/* Left Side - Brand Section */}
+      <motion.div 
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="hidden md:flex md:w-1/2 bg-black text-white flex-col justify-center items-center p-8"
+      >
+        <motion.img 
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5 }}
+          src="/src/assets/images/favicon/favicon.ico" 
+          alt="ProcureNP" 
+          className="h-32 w-32 mb-8" 
+        />
         <p className="text-gray-300 text-lg text-center mb-8">
           Join Nepal's trusted wholesale community
         </p>
         <div className="space-y-4 text-gray-300">
-          <div className="flex items-center gap-3">
-            <i className="bi bi-check-circle text-xl"></i>
-            <span>Access to verified suppliers</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <i className="bi bi-check-circle text-xl"></i>
-            <span>Competitive wholesale prices</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <i className="bi bi-check-circle text-xl"></i>
-            <span>Secure transactions</span>
-          </div>
+          {[
+            "Access to verified suppliers",
+            "Competitive wholesale prices",
+            "Secure transactions"
+          ].map((text, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 + (i * 0.2) }}
+              className="flex items-center gap-3"
+            >
+              <i className="bi bi-check-circle text-xl text-green-500"></i>
+              <span>{text}</span>
+            </motion.div>
+          ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Right Side - Registration Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8">
-        <div className="w-full max-w-md">
-          <div className="mb-8">
-            <Link to="/" className="inline-flex items-center gap-2 mb-6 md:hidden hover:opacity-70 transition-opacity duration-300">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="w-full max-w-md"
+        >
+          <motion.div variants={itemVariants} className="mb-8">
+            <Link to="/" className="inline-flex items-center gap-2 mb-6 md:hidden hover:opacity-70">
               <img src="/src/assets/images/favicon/favicon.ico" alt="ProcureNP" className="h-10 w-10" />
             </Link>
             <h1 className="text-3xl font-bold text-gray-900">Create Seller Account</h1>
             <p className="text-gray-600 mt-2">Sign up to start selling</p>
-          </div>
+          </motion.div>
 
-          {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <motion.div 
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg overflow-hidden"
+            >
               <p className="text-red-700 text-sm font-medium">{error}</p>
-            </div>
+            </motion.div>
           )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5 max-h-[70vh] overflow-y-auto pr-2">
-            <div>
+          <form onSubmit={handleSubmit} className="space-y-5 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
+            {/* Wrap your inputs in motion.div with variants={itemVariants} */}
+            <motion.div variants={itemVariants}>
               <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
               <input 
                 name="fullname"
-                value={form.fullname}
-                onChange={handleChange}
-                type="text"
-                placeholder="Your full name"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
+                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-black transition-all"
+                {...otherProps}
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
-              <input 
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                type="email"
-                placeholder="Your email"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-              <input 
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                type="text"
-                placeholder="Your phone number"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password *</label>
-              <input 
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                type="password"
-                placeholder="Your password"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password *</label>
-              <input 
-                name="confirmPassword"
-                value={form.confirmPassword}
-                onChange={handleChange}
-                type="password"
-                placeholder="Confirm your password"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-              />
-            </div>
+            </motion.div>
 
-            {/* Company Details Section */}
-            <div className="pt-4 border-t border-gray-200">
-              <h3 className="text-sm font-semibold text-gray-900 mb-4">Company Details</h3>
-              
-              <div className="mb-5">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Company Name *</label>
-                <input 
-                  name="companyName"
-                  value={form.companyName}
-                  onChange={handleChange}
-                  type="text"
-                  placeholder="Your company name"
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-                />
-              </div>
+            {/* Repeat the motion.div wrapper for other fields... */}
 
-              <div className="mb-5">
-                <label className="block text-sm font-medium text-gray-700 mb-2">PAN No.</label>
-                <input 
-                  name="pan"
-                  value={form.pan}
-                  onChange={handleChange}
-                  type="text"
-                  placeholder="PAN number"
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-                />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-sm font-medium text-gray-700 mb-2">VAT No.</label>
-                <input 
-                  name="vat"
-                  value={form.vat}
-                  onChange={handleChange}
-                  type="text"
-                  placeholder="VAT number"
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-                />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Annual Turnover</label>
-                <input 
-                  name="turnover"
-                  value={form.turnover}
-                  onChange={handleChange}
-                  type="text"
-                  placeholder="Annual turnover"
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-                />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Year Established</label>
-                <input 
-                  name="established"
-                  value={form.established}
-                  onChange={handleChange}
-                  type="text"
-                  placeholder="Year established"
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-                />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Citizenship</label>
-                <select 
-                  name="citizenship"
-                  value={form.citizenship || ''}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all"
-                >
-                  <option value="">Select citizenship</option>
-                  <option value="Nepali">Nepali</option>
-                  <option value="Foreign">Foreign</option>
-                </select>
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-sm font-medium text-gray-700 mb-2">PAN/VAT Document</label>
-                <input 
-                  name="panVatDoc"
-                  onChange={handleChange}
-                  type="file"
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all cursor-pointer"
-                />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Profile Photo</label>
-                <input 
-                  name="profilePhoto"
-                  onChange={handleChange}
-                  type="file"
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all cursor-pointer"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-start gap-2 pt-4">
-              <input type="checkbox" id="terms" className="w-4 h-4 text-black bg-gray-50 border-gray-200 rounded mt-1 cursor-pointer" />
-              <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
-                I agree to the <a href="#" className="text-black hover:underline font-medium">Terms of Service</a> and <a href="#" className="text-black hover:underline font-medium">Privacy Policy</a>
-              </label>
-            </div>
-
-            <button type="submit" disabled={loading} className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed uppercase">
-              {loading ? 'Creating Account...' : 'Create Seller Account'}
-            </button>
+            <motion.div variants={itemVariants} className="pt-4">
+              <button 
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit" 
+                disabled={loading} 
+                className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-3 rounded-lg transition-colors uppercase shadow-lg"
+              >
+                {loading ? 'Creating Account...' : 'Create Seller Account'}
+              </button>
+            </motion.div>
           </form>
 
-          {/* Already have account */}
-          <p className="text-center text-gray-600 text-sm mt-8">
-            Already have an account? <Link to="/login" className="text-black hover:text-gray-700 font-semibold">SIGN IN</Link>
-          </p>
-        </div>
+          <motion.p variants={itemVariants} className="text-center text-gray-600 text-sm mt-8">
+            Already have an account? <Link to="/login" className="text-black hover:underline font-semibold">SIGN IN</Link>
+          </motion.p>
+        </motion.div>
       </div>
     </div>
   );

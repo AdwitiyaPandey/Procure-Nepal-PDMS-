@@ -23,10 +23,8 @@ export async function uploadToCloudinary(fileBuffer, fileName, folder = 'procure
 }
 
 export async function deleteFromCloudinary(publicId) {
-  try {
-    const result = await cloudinary.uploader.destroy(publicId)
-    return result
-  } catch (error) {
-    throw error
-  }
+  const result = await cloudinary.uploader.destroy(publicId)
+  return result
 }
+
+// Commit: 2026-01-29 Ujjwal

@@ -445,8 +445,8 @@ const GetStarted = () => {
             ) : (
               <button
                 type="submit"
-                disabled={loading}
-                className="flex-1 bg-black hover:bg-gray-900 text-white font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!form.agreeToTerms || loading}
+                className={`flex-1 bg-black text-white font-semibold py-2.5 rounded-lg transition-colors ${(!form.agreeToTerms || loading) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-900'}`}
               >
                 {loading ? 'Creating Account...' : 'Create Seller Account'}
               </button>

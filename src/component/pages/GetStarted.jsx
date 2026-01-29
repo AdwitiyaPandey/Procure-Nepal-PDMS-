@@ -50,6 +50,8 @@ const GetStarted = () => {
     let stepData = {}
     let stepFields = []
 
+    const stepErrors = {}
+
     if (step === 1) {
       stepFields = ['fullname', 'email', 'phone']
       stepData = { fullname: form.fullname, email: form.email, phone: form.phone }
@@ -72,7 +74,6 @@ const GetStarted = () => {
       }
     }
 
-    const stepErrors = {}
     stepFields.forEach(field => {
       if (!stepData[field]) {
         stepErrors[field] = 'This field is required'

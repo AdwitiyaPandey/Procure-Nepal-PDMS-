@@ -3,13 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../AuthContext';
 import { toast, Toaster } from 'react-hot-toast';
 
-// Import the sub-components
+
 import Categories from '../Categories';
 import SupplierProfile from '../SupplierProfile'; 
+import AddProductForm from '../AddProductForm'; 
 
 function Landing() {
     const [query, setQuery] = useState('');
-    const [activeView, setActiveView] = useState('buyer'); // 'buyer' or 'seller'
+    const [activeView, setActiveView] = useState('buyer'); 
+    const [showAddForm, setShowAddForm] = useState(false); 
     const navigate = useNavigate();
     const { user, logout } = useAuth(); 
 
@@ -29,23 +31,45 @@ function Landing() {
         }
     };
 
+    const toggleView = () => {
+        setActiveView(activeView === 'buyer' ? 'seller' : 'buyer');
+        setShowAddForm(false);
+    };
+    useEffect(() => {
+        if (user && user.role === 'seller' && !user.isApproved) {
+            
+            const checkStatus = async () => {
+                try {
+                    const res = await axios.get(`http://localhost:5000/api/auth/status/${user.id}`);
+                    if (res.data.isApproved) {
+                        
+                        toast.success("Your account has been approved! Please re-login to access seller tools.");
+                    }
+                } catch (err) {
+                    console.log("Still pending...");
+                }
+            };
+            checkStatus();
+        }
+    }, [user]);
+
     return (
         <div className="min-h-screen bg-white">
             <Toaster position="top-center" />
             
-            {/* --- FIXED NAVBAR --- */}
+
             <nav className="w-full bg-white shadow-md sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-6 py-4">
                     <div className="flex items-center justify-between">
-                        {/* Logo */}
-                        <Link to="/" onClick={() => setActiveView('buyer')} className="flex items-center gap-2">
+                     
+                        <Link to="/" onClick={() => {setActiveView('buyer'); setShowAddForm(false);}} className="flex items-center gap-2">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
                                 <span className="text-white font-bold text-lg">P</span>
                             </div>
                             <span className="font-bold text-xl text-gray-800">Procure Nepal</span>
                         </Link>
 
-                        {/* Search Bar - Only show in Buyer View */}
+
                         <div className={`flex-1 mx-8 transition-opacity ${activeView === 'seller' ? 'opacity-20 pointer-events-none' : 'opacity-100'}`}>
                             <form onSubmit={handleSearch} className="flex">
                                 <input 
@@ -61,16 +85,45 @@ function Landing() {
                             </form>
                         </div>
 
-                        {/* Right Section */}
+
                         <div className="flex items-center gap-5">
                             {!user ? (
                                 <Link to="/login" className="bg-teal-600 text-white px-6 py-2 rounded-lg font-bold">Login</Link>
                             ) : (
                                 <div className="flex items-center gap-4">
-                                    {/* Role-based Dashboard Toggle */}
+                                    
+                                    {/* --- 1. BECOME A SELLER BUTTON (For Buyers) --- */}
+                                    {user.role === 'buyer' && (
+                                        <Link 
+                                            to="/become-seller" 
+                                            className="bg-amber-100 text-amber-700 px-4 py-2 rounded-lg font-bold border border-amber-200 hover:bg-amber-200 transition-all flex items-center gap-2"
+                                        >
+                                            <i className="bi bi-shop-window"></i> Become a Seller
+                                        </Link>
+                                    )}
+
+                                    {/* --- 2. PENDING APPROVAL MESSAGE --- */}
+                                    {user.role === 'seller' && !user.isApproved && (
+                                        <div className="bg-gray-100 text-gray-500 px-4 py-2 rounded-lg text-sm italic border border-gray-200">
+                                            <i className="bi bi-clock-history mr-2"></i>
+                                            Seller Approval Pending
+                                        </div>
+                                    )}
+
+                                    {/* --- 3. ADD PRODUCT BUTTON (Visible only in Seller View) --- */}
+                                    {activeView === 'seller' && !showAddForm && (
+                                        <button 
+                                            onClick={() => setShowAddForm(true)}
+                                            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 shadow-sm"
+                                        >
+                                            <i className="bi bi-plus-circle"></i> Add Product
+                                        </button>
+                                    )}
+
+                                    {/* --- 4. SWITCH VIEW BUTTON (Only for Approved Sellers) --- */}
                                     {user.role === 'seller' && user.isApproved && (
                                         <button 
-                                            onClick={() => setActiveView(activeView === 'buyer' ? 'seller' : 'buyer')}
+                                            onClick={toggleView}
                                             className={`px-4 py-2 rounded-xl text-sm font-bold border transition-all ${
                                                 activeView === 'seller' 
                                                 ? 'bg-orange-600 text-white border-orange-600 shadow-lg' 
@@ -82,7 +135,7 @@ function Landing() {
                                         </button>
                                     )}
 
-                                    {/* Admin Link */}
+
                                     {user.role === 'admin' && (
                                         <Link to="/admin-dashboard" className="text-teal-600 font-bold text-sm bg-teal-50 px-3 py-2 rounded-lg">
                                             Admin Panel
@@ -101,10 +154,10 @@ function Landing() {
                 </div>
             </nav>
 
-            {/* --- DYNAMIC BODY CONTENT --- */}
+
             <main className="min-h-[70vh]">
                 {activeView === 'buyer' ? (
-                    /* BUYER VIEW */
+
                     <>
                         <div className="w-full bg-gradient-to-r from-teal-50 to-blue-50 py-16">
                             <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-center">
@@ -133,12 +186,15 @@ function Landing() {
                         <Categories />
                     </>
                 ) : (
-                    /* SUPPLIER VIEW (The page you asked for) */
-                    <SupplierProfile user={user} />
+                    showAddForm ? (
+                        <AddProductForm onBack={() => setShowAddForm(false)} />
+                    ) : (
+                        <SupplierProfile user={user} />
+                    )
                 )}
             </main>
 
-            {/* --- FIXED FOOTER --- */}
+
             <footer className="bg-gray-900 text-white py-12 mt-20">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-8">
@@ -151,9 +207,9 @@ function Landing() {
                         <div>
                             <h4 className="font-bold mb-4">Quick Links</h4>
                             <ul className="text-gray-400 text-sm space-y-2">
-                                <li>About Us</li>
-                                <li>Terms & Conditions</li>
-                                <li>Help Center</li>
+                                <li className="hover:text-teal-400 cursor-pointer">About Us</li>
+                                <li className="hover:text-teal-400 cursor-pointer">Terms & Conditions</li>
+                                <li className="hover:text-teal-400 cursor-pointer">Help Center</li>
                             </ul>
                         </div>
                         <div>

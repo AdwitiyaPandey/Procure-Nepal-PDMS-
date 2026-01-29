@@ -15,6 +15,14 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
+    const refreshUser = async () => {
+        try {
+            const res = await axios.get('http://localhost:5000/api/auth/me'); // Create this route
+            setUser(res.data.user); // Update context with fresh DB data
+        } catch (err) {
+            console.error("Could not refresh user state");
+        }
+        };
     const login = (userData) => {
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));

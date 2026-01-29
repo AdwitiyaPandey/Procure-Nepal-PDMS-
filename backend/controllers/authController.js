@@ -2,23 +2,34 @@
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 
-const User = require('../models/User');
+const { User } = require('../models');
 const crypto = require("crypto");
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone } = req.body;
+    
+    
+    const profileImageUrl = req.file ? req.file.path : null;
+
+  
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) return res.status(400).json({ message: "Email already exists" });
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({ 
+    const newUser = await User.create({ 
       name, 
       email, 
       password: hashedPassword,
+      phone,
+      profilePhoto: profileImageUrl, 
       role: 'buyer' 
     });
 
-    res.status(201).json({ message: "User created successfully" });
+    res.status(201).json({ success: true, message: "User created successfully" });
   } catch (error) {
+    console.error("REGISTRATION ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };

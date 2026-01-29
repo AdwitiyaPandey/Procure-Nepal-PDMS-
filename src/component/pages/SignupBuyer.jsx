@@ -25,26 +25,21 @@ function SignupBuyer() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
-    if (!form.fullname || !form.email || !form.phone || !form.password) {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-
     setLoading(true);
-    const formData = new FormData();
-    formData.append('name', form.fullname);
-    formData.append('email', form.email);
-    formData.append('phone', form.phone);
-    formData.append('password', form.password);
-    formData.append('role', 'buyer'); // Default role
-    if (form.profilePhoto) formData.append('profilePhoto', form.profilePhoto);
+
+    const payload = {
+      name: form.fullname,
+      email: form.email,
+      phone: form.phone,
+      password: form.password,
+      role: 'buyer'
+    };
 
     try {
-      // Ensure this matches your backend registration endpoint
-      const res = await axios.post('http://localhost:5000/api/auth/register', formData);
       
-      toast.success('Account created! Please login to continue.');
+      const res = await axios.post('http://localhost:5000/api/auth/register', payload);
+      
+      toast.success('Account created!');
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed');

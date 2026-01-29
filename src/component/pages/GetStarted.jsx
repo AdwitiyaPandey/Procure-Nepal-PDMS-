@@ -47,6 +47,7 @@ const GetStarted = () => {
   }
 
   const validateStep = () => {
+    // clear previous step errors
     let stepData = {}
     let stepFields = []
 
@@ -101,6 +102,9 @@ const GetStarted = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    // clear previous errors
+    setErrors({})
+
     if (!validateStep()) {
       return
     }
@@ -123,6 +127,7 @@ const GetStarted = () => {
       formData.append('citizenship', form.citizenship)
       formData.append('establishedDate', form.establishedDate)
       formData.append('turnover', form.turnover)
+      formData.append('agreeToTerms', form.agreeToTerms ? '1' : '0')
       formData.append('password', form.password)
 
       await register(formData, 'seller')

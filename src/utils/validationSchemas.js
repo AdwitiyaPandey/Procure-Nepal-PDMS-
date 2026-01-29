@@ -5,6 +5,7 @@ export const BuyerRegistrationSchema = z.object({
   email: z.string().email('Invalid email address'),
   // require exactly 10 digits
   phone: z.string().regex(/^\d{10}$/, 'Phone must be exactly 10 digits'),
+  agreeToTerms: z.literal(true, { errorMap: () => ({ message: 'You must agree to the Terms of Service' }) }),
   // strong password: min 8, at least one upper, one lower, one number and one special char
   password: z.string().min(8, 'Password must be at least 8 characters').regex(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)/, 'Password must include uppercase, lowercase, number and special character'),
   confirmPassword: z.string(),
@@ -18,6 +19,7 @@ export const SellerRegistrationSchema = z.object({
   email: z.string().email('Invalid email address'),
   // require exactly 10 digits
   phone: z.string().regex(/^\d{10}$/, 'Phone must be exactly 10 digits'),
+  agreeToTerms: z.literal(true, { errorMap: () => ({ message: 'You must agree to the Terms of Service' }) }),
   // strong password: min 8, at least one upper, one lower, one number and one special char
   password: z.string().min(8, 'Password must be at least 8 characters').regex(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)/, 'Password must include uppercase, lowercase, number and special character'),
   confirmPassword: z.string(),

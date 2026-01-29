@@ -13,6 +13,7 @@ import Login from './component/Login'
 import Register from './component/Register'
 import SupplierDashboard from './component/SupplierDashboard'
 import ForgotPassword from './component/pages/ForgotPassword'
+import SellerRegistered from './component/pages/SellerRegistered'
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/favourites" element={<Favourites />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
+          <Route path="/seller-registered" element={<SellerRegistered />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

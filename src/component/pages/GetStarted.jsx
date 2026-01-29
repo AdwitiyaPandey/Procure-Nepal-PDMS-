@@ -11,6 +11,7 @@ const GetStarted = () => {
     fullname: '',
     email: '',
     phone: '',
+    agreeToTerms: false,
     companyName: '',
     panNumber: '',
     vatNumber: '',
@@ -29,10 +30,16 @@ const GetStarted = () => {
   const [step, setStep] = useState(1) // 1: Personal, 2: Business, 3: Security
 
   const handleChange = (e) => {
-    const { name, value, type, files } = e.target
-    // No file inputs on this flow anymore; treat everything as value
-    setForm(prev => ({ ...prev, [name]: value }))
-    
+    const { name, value, type, checked } = e.target
+    let newValue = value
+    if (type === 'checkbox') newValue = checked
+    // numeric-only fields
+    if (['phone', 'panNumber', 'vatNumber', 'citizenship', 'turnover'].includes(name)) {
+      newValue = String(value).replace(/\D/g, '')
+      if (name === 'phone') newValue = newValue.slice(0, 10)
+    }
+    setForm(prev => ({ ...prev, [name]: newValue }))
+
     // Clear error for this field
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: undefined }))
@@ -59,6 +66,10 @@ const GetStarted = () => {
     } else if (step === 3) {
       stepFields = ['password', 'confirmPassword']
       stepData = { password: form.password, confirmPassword: form.confirmPassword }
+      // require terms on final step
+      if (!form.agreeToTerms) {
+        stepErrors.agreeToTerms = 'You must agree to the Terms of Service'
+      }
     }
 
     const stepErrors = {}
@@ -114,7 +125,8 @@ const GetStarted = () => {
       formData.append('password', form.password)
 
       await register(formData, 'seller')
-      navigate('/seller-dashboard')
+      // show registration received page; approval happens on backend/admin
+      navigate('/seller-registered')
     } catch (error) {
       setErrors({ general: error.message })
     } finally {
@@ -236,27 +248,7 @@ const GetStarted = () => {
                 {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
               </div>
 
-              {/* Profile Photo */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Profile Photo</label>
-                <div className={`relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-                  errors.profilePhoto ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                }`}>
-                  <input 
-                    name="profilePhoto"
-                    onChange={handleChange}
-                    type="file"
-                    accept="image/*"
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                  <div className="py-2">
-                    <i className="bi bi-cloud-upload text-3xl text-gray-400"></i>
-                    <p className="text-sm text-gray-600 mt-2">Click to upload or drag and drop</p>
-                    <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
-                  </div>
-                </div>
-                {errors.profilePhoto && <p className="text-red-500 text-sm mt-1">{errors.profilePhoto}</p>}
-              </div>
+              {/* Profile Photo removed for seller registration per requirements */}
             </div>
           )}
 
@@ -415,10 +407,11 @@ const GetStarted = () => {
 
               {/* Terms */}
               <div className="flex items-start gap-2">
-                <input type="checkbox" id="terms" className="w-4 h-4 text-black bg-gray-50 border-gray-200 rounded mt-1 cursor-pointer" />
+                <input type="checkbox" id="terms" name="agreeToTerms" checked={!!form.agreeToTerms} onChange={handleChange} className="w-4 h-4 text-black bg-gray-50 border-gray-200 rounded mt-1 cursor-pointer" />
                 <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
                   I agree to the <a href="#" className="text-black hover:underline font-medium">Terms of Service</a> and <a href="#" className="text-black hover:underline font-medium">Privacy Policy</a>
                 </label>
+                {errors.agreeToTerms && <p className="text-red-500 text-sm mt-1">{errors.agreeToTerms}</p>}
               </div>
             </div>
           )}

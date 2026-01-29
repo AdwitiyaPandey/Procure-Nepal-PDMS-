@@ -10,6 +10,7 @@ function Register() {
     fullname: '',
     email: '',
     phone: '',
+    agreeToTerms: false,
     password: '',
     confirmPassword: '',
   })
@@ -19,8 +20,14 @@ function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
+      const { name, value, type, checked } = e.target
+      let newValue = value
+      if (type === 'checkbox') newValue = checked
+      // ensure phone only digits and max 10
+      if (name === 'phone') {
+        newValue = value.replace(/\D/g, '').slice(0, 10)
+      }
+      setForm(prev => ({ ...prev, [name]: newValue }))
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }))
     }
@@ -46,6 +53,7 @@ function Register() {
       formData.append('fullname', form.fullname)
       formData.append('email', form.email)
       formData.append('phone', form.phone)
+      formData.append('agreeToTerms', form.agreeToTerms ? '1' : '0')
       formData.append('password', form.password)
       formData.append('confirmPassword', form.confirmPassword)
       // No profile photo field on buyer registration (handled on profile later)
@@ -87,7 +95,7 @@ function Register() {
       </div>
 
       {/* Right Side - Registration Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8 md:overflow-y-auto md:max-h-screen">
+      <div className="w-full md:w-1/2 flex items-start justify-center p-4 md:p-8 md:overflow-y-auto md:max-h-screen">
         <div className="w-full max-w-md">
           <div className="mb-8">
             <Link to="/" className="inline-flex items-center gap-2 mb-6 md:hidden hover:opacity-70 transition-opacity duration-300">
@@ -156,20 +164,19 @@ function Register() {
             {/* Phone */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-              <input 
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                maxLength={10}
-                placeholder="98XXXXXXXX"
-                onKeyDown={(e) => { if (e.key.length === 1 && !/[0-9]/.test(e.key)) e.preventDefault() }}
-                className={`w-full px-4 py-2.5 bg-gray-50 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
-                  errors.phone ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-black'
-                }`}
-              />
+                <input 
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  type="tel"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={10}
+                  placeholder="98XXXXXXXX"
+                  className={`w-full px-4 py-2.5 bg-gray-50 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
+                    errors.phone ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-black'
+                  }`}
+                />
               {errors.phone && (
                 <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
               )}
@@ -233,10 +240,11 @@ function Register() {
 
             {/* Terms Checkbox */}
             <div className="flex items-start gap-2">
-              <input type="checkbox" id="terms" className="w-4 h-4 text-black bg-gray-50 border-gray-200 rounded mt-1 cursor-pointer" />
+              <input type="checkbox" id="terms" name="agreeToTerms" checked={!!form.agreeToTerms} onChange={handleChange} className="w-4 h-4 text-black bg-gray-50 border-gray-200 rounded mt-1 cursor-pointer" />
               <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
                 I agree to the <a href="#" className="text-black hover:underline font-medium">Terms of Service</a> and <a href="#" className="text-black hover:underline font-medium">Privacy Policy</a>
               </label>
+              {errors.agreeToTerms && <p className="text-red-500 text-sm mt-1">{errors.agreeToTerms}</p>}
             </div>
 
             {/* Submit Button */}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { useAuth } from '../../AuthContext'; // Import useAuth
+import { useNavigate } from 'react-router-dom'; 
+import { useAuth } from '../../AuthContext'; 
 import { toast, Toaster } from 'react-hot-toast';
 
 function AdminDashboard() {
@@ -9,7 +9,7 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   
   const navigate = useNavigate();
-  const { logout } = useAuth(); // Destructure logout from context
+  const { logout } = useAuth(); 
 
   useEffect(() => {
     fetchPendingSellers();
@@ -26,13 +26,12 @@ function AdminDashboard() {
     }
   };
 
-  // --- Logout Logic ---
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to logout from the Admin Panel?");
     if (confirmLogout) {
-      logout(); // Clears user state
+      logout(); 
       toast.success("Logged out successfully");
-      navigate('/login'); // Redirect to login
+      navigate('/login'); 
     }
   };
 
@@ -53,7 +52,7 @@ function AdminDashboard() {
       <Toaster />
       <div className="max-w-7xl mx-auto">
         
-        {/* Header Section */}
+       
         <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Admin Control Panel</h1>
@@ -65,7 +64,7 @@ function AdminDashboard() {
               {pendingSellers.length} Pending
             </div>
             
-            {/* Logout Button */}
+          
             <button 
               onClick={handleLogout}
               className="flex items-center gap-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-lg font-bold transition-all border border-red-100"

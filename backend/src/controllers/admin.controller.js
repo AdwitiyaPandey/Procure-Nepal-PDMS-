@@ -1,7 +1,7 @@
 const db = require("../db/db");
 const jwt = require("jsonwebtoken");
 
-// Hardcoded admin credentials (change as needed)
+// Hardcoded admin credentials (change as needed according your backend)
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin@procure.local";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "AdminPass123";
 

@@ -122,12 +122,13 @@ function Landingbanner() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Newly added products</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2"style={{ letterSpacing: '0.05em', lineHeight: 1.7 }}>Newly Added Products</h2>
             <div className="w-12 h-1 bg-teal-500 rounded-full"></div>
           </div>
 
           {newlyAddedProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {newlyAddedProducts.map(p => (
                 <div key={p.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
                   <div className="aspect-square bg-gray-100 relative">
@@ -190,6 +191,13 @@ function Landingbanner() {
                   </div>
                 </div>
               ))}
+              </div>
+
+              <div className="mt-8 text-center">
+                <Link to="/search" className="inline-block bg-black text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-900 transition-colors">
+                  Browse more products
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="text-center py-12">

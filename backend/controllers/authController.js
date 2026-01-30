@@ -2,7 +2,7 @@
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 
-const { User } = require('../models');
+const  User  = require('../models/User');
 const crypto = require("crypto");
 
 exports.register = async (req, res) => {
@@ -39,19 +39,18 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1. Find user by email
+  
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(400).json({ message: "Invalid Credentials (User not found)" });
     }
 
-    // 2. Compare passwords (Input plain text vs Hashed DB text)
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid Credentials (Password mismatch)" });
     }
 
-    // 3. Success
+  
     res.json({
       message: "Login successful",
       user: {
@@ -84,4 +83,33 @@ exports.forgotPassword = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+
+
+export const getStatus = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id); 
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        
+        res.json({ 
+            isApproved: user.isApproved, 
+            role: user.role 
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching status" });
+    }
+};
+
+export const getMe = async (req, res) => {
+    try {
+        
+        const user = await User.findById(req.user.id).select('-password'); 
+        
+       
+        res.json({ user }); 
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
 };

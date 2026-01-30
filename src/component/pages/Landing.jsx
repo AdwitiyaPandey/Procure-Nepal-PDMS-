@@ -107,12 +107,12 @@ function Landing() {
                             ) : (
                                 <div className="flex items-center gap-4">
                                     {user.role === 'buyer' && (
-                                        <Link to="/become-seller" className="bg-amber-100 text-amber-700 px-4 py-2 rounded-lg font-bold border border-amber-200 hover:bg-amber-200 transition-all flex items-center gap-2">
+                                        <Link to="/signup/supplier" className="bg-amber-100 text-amber-700 px-4 py-2 rounded-lg font-bold border border-amber-200 hover:bg-amber-200 transition-all flex items-center gap-2">
                                             <i className="bi bi-shop-window"></i> Become a Seller
                                         </Link>
                                     )}
 
-                                    {user.role === 'seller' && !user.isApproved && (
+                                    {user.role === 'seller' && !Boolean(user.isApproved) && (
                                         <div className="bg-gray-100 text-gray-500 px-4 py-2 rounded-lg text-sm italic border border-gray-200">
                                             <i className="bi bi-clock-history mr-2"></i> Seller Approval Pending
                                         </div>

@@ -11,7 +11,7 @@ const storage = new CloudinaryStorage({
   params: {
     folder: 'procure_nepal_users', 
     allowed_formats: ['jpg', 'png', 'jpeg'],
-    transformation: [{ width: 400, height: 400, crop: 'fill', gravity: 'face' }] // Auto-crop to face!
+    transformation: [{ width: 400, height: 400, crop: 'fill', gravity: 'face' }] 
   },
 });
 

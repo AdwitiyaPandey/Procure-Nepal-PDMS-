@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 
-// Get all pending seller applications
-router.get('/admin/pending-sellers', async (req, res) => {
+router.get('/pending-sellers', async (req, res) => {
   try {
     const pendingSellers = await User.findAll({
       where: { role: 'seller', isApproved: false }
@@ -14,20 +13,22 @@ router.get('/admin/pending-sellers', async (req, res) => {
   }
 });
 
-// Approve or Decline a seller
-router.post('/admin/verify-seller', async (req, res) => {
-  const { userId, action } = req.body; // action: 'approve' or 'decline'
+
+router.post('/verify-seller', async (req, res) => {
+  const { userId, action } = req.body; 
   try {
     const user = await User.findByPk(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     if (action === 'approve') {
       user.isApproved = true;
+   
       await user.save();
       res.json({ message: "Seller approved successfully" });
     } else {
-      // If declined, you might want to switch them back to 'buyer'
+
       user.role = 'buyer';
+      user.isApproved = false; 
       await user.save();
       res.json({ message: "Application declined. User reverted to buyer." });
     }

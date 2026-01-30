@@ -1,16 +1,75 @@
-# React + Vite
+**📌 Overview**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Procure-Nepal is a B2B marketplace aimed at connecting institutional buyers in Nepal with verified local suppliers. The platform simplifies bulk procurement by centralizing product listings, enabling MOQ-based purchasing, instant quote requests, wishlist/shortlist features, and direct buyer–seller communication via WhatsApp. Supplier onboarding and verification are managed by an admin to ensure trust, compliance, and reliability.
 
-Currently, two official plugins are available:
+**❗ Problem Statement**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Disjointed procurement processes where buyers must contact multiple suppliers
 
-## React Compiler
+Difficulty verifying supplier authenticity (PAN, VAT, business legitimacy)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Manual and inefficient quotation processing, resulting in delays and lost opportunities
 
-## Expanding the ESLint configuration
+**💡 Solution**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Aggregated catalog of verified supplier profiles
+
+Structured quote request workflows integrated with WhatsApp
+
+Supplier dashboards for product management and quote tracking
+
+Admin-led compliance checks and supplier verification
+
+<u>**✨ Key Features**</u>
+**🛒 Buyer**
+
+Searchable product catalog
+
+Add products to wishlist / shortlist
+
+One-click communication via WhatsApp
+
+**🏭 Supplier**
+
+Seller dashboard for product listing and updates
+
+Quote request management
+
+Visibility control after admin approval
+
+**🛡️ Admin**
+
+Supplier verification (PAN / VAT)
+
+Approve or block suppliers
+
+
+<u>**🛠️ Tech Stack**</u>
+
+Frontend: React 
+
+Backend: Node.js, Express.js
+
+Database: PostgreSQL (SupaBase) 
+
+Media Storage: Cloudinary 
+
+Communication: WhatsApp (third-party integrations) 
+
+
+
+**👥 Team**
+
+**Adwitiya Bahadur Pandey** — Scrum Master
+
+**Nishan Thapa Magar** — Product Owner
+
+**Sumit Saru Magar** — Developer
+
+**Ujjwal Subedi** — Developer
+
+**Tsewang Bista** — Developer
+
+<u>**📄 License**</u>
+
+This project is developed for academic and learning purposes only.

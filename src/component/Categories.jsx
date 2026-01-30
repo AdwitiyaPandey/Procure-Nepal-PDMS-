@@ -1,104 +1,52 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const categoryIcons = {
-  'Agriculture & Food': '🌾',
-  'Metal & Machinery': '⚙️',
-  'Textiles & Apparel': '👕',
-  'Construction Materials': '🏗️',
-  'Chemicals & Plastics': '🧪',
-  'Handicrafts': '🎨',
-  'Spices & Condiments': '🌶️',
-  'Electronics & IT': '💻',
-  'Pharmaceuticals': '💊',
-  'Energy & Utilities': '⚡',
-  'Automotive': '🚗',
-  'Furniture & Decor': '🪑',
-  'Leather & Accessories': '👜',
-  'Paper & Packaging': '📦',
-  'Beauty & Personal Care': '💄',
-  'Home Appliances': '🏠'
-}
+const categories = [
+  { id: 1, name: 'Building & Construction', icon: '🏗️', image: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=300&h=300&fit=crop' },
+  { id: 2, name: 'Industrial Supplies And Machinery', icon: '⚙️', image: 'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=300&h=300&fit=crop' },
+  { id: 3, name: 'Hospital And Diagnosis Instrument', icon: '🏥', image: 'https://images.unsplash.com/photo-1576091160550-112173f7f869?w=300&h=300&fit=crop' },
+  { id: 4, name: 'Food, Beverage And Health Supplements', icon: '🥗', image: 'https://images.unsplash.com/photo-1542621334-a254cf16f737?w=300&h=300&fit=crop' },
+  { id: 5, name: 'Computer & IT Solutions', icon: '💻', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=300&h=300&fit=crop' },
+  { id: 6, name: 'Consumer Electronics', icon: '📱', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop' },
+  { id: 7, name: 'Fashion Accessories & Gears', icon: '👗', image: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=300&h=300&fit=crop' },
+  { id: 8, name: 'Textiles & Fabrics', icon: '🧵', image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300&h=300&fit=crop' },
+]
 
 function Categories() {
   const navigate = useNavigate()
-  const [categories, setCategories] = useState([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetchCategories()
-  }, [])
-
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch('http://localhost:4000/api/categories')
-      if (!res.ok) {
-        const errBody = await res.text().catch(() => '')
-        throw new Error(`Categories API error: ${res.status} ${res.statusText} ${errBody}`)
-      }
-      const data = await res.json()
-      // Normalize to an array of category names
-      let names = []
-      if (Array.isArray(data) && data.length > 0) {
-        // API returns array of objects or array of strings
-        if (typeof data[0] === 'object') {
-          names = data.map(cat => cat.name)
-        } else {
-          names = data
-        }
-      } else if (Array.isArray(data.categories)) {
-        names = data.categories.map(cat => (typeof cat === 'object' ? cat.name : cat))
-      } else {
-        names = []
-      }
-      setCategories(names)
-    } catch (err) {
-      console.error('Error fetching categories:', err)
-      // Fallback to some default categories
-      setCategories(['Agriculture & Food', 'Metal & Machinery', 'Textiles & Apparel', 'Construction Materials', 'Chemicals & Plastics', 'Electronics & IT', 'Handicrafts', 'Spices & Condiments', 'Pharmaceuticals', 'Energy & Utilities', 'Automotive', 'Furniture & Decor', 'Leather & Accessories', 'Paper & Packaging', 'Beauty & Personal Care', 'Home Appliances'])
-    } finally {
-      setLoading(false)
-    }
-  }
 
   function handleCategoryClick(categoryName) {
-    navigate(`/search?category=${encodeURIComponent(categoryName)}`)
-  }
-
-  if (loading) {
-    return (
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
-          </div>
-        </div>
-      </section>
-    )
+    navigate(`/search?q=${encodeURIComponent(categoryName)}`)
   }
 
   return (
-    <section className="py-16 md:py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3" style={{ letterSpacing: '0.07em', lineHeight: 1.7 }}>Popular Categories</h2>
-          <p className="text-gray-600">Browse products across different industries</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Popular Categories</h2>
+          <div className="w-12 h-1 bg-teal-500 rounded-full"></div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-6">
-          {categories.slice(0, 16).map(cat => (
-            <button
-              key={cat}
-              onClick={() => handleCategoryClick(cat)}
-              className="group flex flex-col items-center p-4 md:p-6 bg-white rounded-lg border border-gray-200 hover:border-teal-300 hover:shadow-md transition-all duration-200"
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {categories.map(cat => (
+            <div
+              key={cat.id}
+              onClick={() => handleCategoryClick(cat.name)}
+              className="group cursor-pointer bg-white border border-teal-300 rounded-lg overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 duration-300"
             >
-              <div className="text-4xl md:text-5xl mb-3 group-hover:scale-110 transition-transform">
-                {categoryIcons[cat] || '📦'}
+              <div className="h-40 overflow-hidden bg-gray-100 border-b border-teal-300">
+                <img 
+                  src={cat.image} 
+                  alt={cat.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
-              <h3 className="text-sm md:text-base font-medium text-gray-900 group-hover:text-black text-center transition-colors line-clamp-2">
-                {cat}
-              </h3>
-            </button>
+              <div className="p-4">
+                <h3 className="text-md font-semibold text-gray-800 group-hover:text-teal-600 transition-colors line-clamp-2">
+                  {cat.name}
+                </h3>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -107,4 +55,3 @@ function Categories() {
 }
 
 export default Categories
-// Commit: 2026-01-01 Ujjwal

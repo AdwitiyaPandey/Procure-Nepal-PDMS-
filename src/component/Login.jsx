@@ -1,188 +1,152 @@
-import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../AuthContext'
-import { LoginSchema, validateFormData } from '../utils/validationSchemas'
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { useAuth } from "./../AuthContext";
+
 
 function Login() {
-  const navigate = useNavigate()
-  const { login, error: authError, clearError } = useAuth()
-  const [form, setForm] = useState({ email: '', password: '' })
-  const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState({})
-  const [showPassword, setShowPassword] = useState(false)
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { login } = useAuth();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
-    // Clear field error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }))
-    }
-    if (authError) {
-      clearError()
-    }
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setError("");
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    // Validate form
-    const validation = validateFormData(LoginSchema, form)
-    if (!validation.success) {
-      setErrors(validation.errors)
-      return
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!form.email || !form.password) {
+      setError("Please enter email and password");
+      return;
     }
 
-    setLoading(true)
-    setErrors({})
 
+
+    setLoading(true);
     try {
-      await login(form.email, form.password)
-      navigate('/')
-    } catch (error) {
-      setErrors({ general: error.message })
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+          email: form.email,
+          password: form.password,
+      });
+
+      login(res.data.user);
+      toast.success("Login successful!");
+
+      
+      if (res.data.user.role === 'admin') {
+          navigate("/admin-dashboard");
+      } else {
+          navigate("/");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Login failed");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
+
 
   return (
-    <div className="min-h-screen bg-white flex flex-col md:flex-row">
-      {/* Left Side - Brand Section (Hidden on mobile) */}
-      <div className="hidden md:flex md:w-1/2 bg-black text-white flex-col justify-center items-center p-8">
-        <div className="mb-8">
-          <img src="/src/assets/images/procure_logo.png" alt="ProcureNP Logo" className="h-16 w-auto mx-auto mb-4" />
-          <p className="text-center text-xl font-bold">ProcureNP</p>
-        </div>
-        <p className="text-gray-300 text-lg text-center mb-8">
-          Welcome back to Nepal's trusted wholesale marketplace
-        </p>
-        <div className="space-y-4 text-gray-300">
-          <div className="flex items-center gap-3">
-            <i className="bi bi-check-circle text-xl"></i>
-            <span>Access to verified suppliers</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <i className="bi bi-check-circle text-xl"></i>
-            <span>Competitive wholesale prices</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <i className="bi bi-check-circle text-xl"></i>
-            <span>Secure transactions</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Side - Login Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8 md:overflow-y-auto md:max-h-screen">
-        <div className="w-full max-w-md">
-          <div className="mb-8">
-            <Link to="/" className="inline-flex items-center gap-2 mb-6 md:hidden hover:opacity-70 transition-opacity duration-300">
-              <img src="/src/assets/images/procure_logo.png" alt="ProcureNP" className="h-10 w-auto" />
-            </Link>
-            <Link to="/" className="inline-flex items-center gap-2 mb-4 text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
-              <i className="bi bi-arrow-left"></i>
-              <span>Back to Home</span>
-            </Link>
-            <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-            <p className="text-gray-600 mt-2">Sign in to access your account</p>
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10">
+          {/* Header */}
+          <div className="mb-8 text-center">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center mx-auto mb-4">
+              <span className="text-white font-bold text-2xl">P</span>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900">Sign In</h1>
+            <p className="text-gray-600 mt-2">Welcome back to Procure Nepal</p>
           </div>
 
-          {/* General Error Message */}
-          {errors.general && (
+          {/* Error Message */}
+          {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-700 text-sm font-medium">{errors.general}</p>
+              <p className="text-red-700 text-sm font-medium">{error}</p>
             </div>
           )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
               <input 
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                type="text"
+                name="email" 
+                value={form.email} 
+                onChange={handleChange} 
+                type="email"
                 placeholder="you@example.com"
-                className={`w-full px-4 py-2.5 bg-gray-50 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
-                  errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-black'
-                }`}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
               />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-              )}
             </div>
 
-            {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-              <div className="relative">
-                <input 
-                  name="password"
-                  value={form.password}
-                  onChange={handleChange}
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  className={`w-full px-4 py-2.5 bg-gray-50 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
-                    errors.password ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-black'
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'}`}></i>
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-              )}
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+              <input 
+                name="password" 
+                value={form.password} 
+                onChange={handleChange} 
+                type="password"
+                placeholder="••••••••"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+              />
             </div>
 
-            {/* Remember & Forgot Password */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between text-sm">
               <label className="flex items-center">
-                <input type="checkbox" className="w-4 h-4 text-black bg-gray-50 border-gray-200 rounded cursor-pointer" />
-                <span className="ml-2 text-sm text-gray-600 cursor-pointer">Remember me</span>
+                <input type="checkbox" className="w-4 h-4 text-teal-600 rounded" />
+                <span className="ml-2 text-gray-600">Remember me</span>
               </label>
-              <Link to="/forgot-password" className="text-sm text-black hover:text-gray-700 font-medium">
-                Forgot password?
-              </Link>
+              <Link to="/forget-password" className="text-teal-600 hover:text-teal-700 font-medium">Forgot password?</Link>
             </div>
 
-            {/* Submit Button */}
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed uppercase"
+              className="w-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          {/* Sign Up Link */}
-          <p className="text-center text-gray-600 text-sm mt-6">
+          {/* Divider */}
+          <div className="relative my-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
+          
+          <p className="text-center text-gray-600 text-sm mt-8">
             Don't have an account? 
-            <Link to="/register" className="text-black hover:text-gray-700 font-semibold ml-1">
-              Create one
-            </Link>
+
           </p>
 
           {/* Seller CTA */}
-          <div className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
+          <div className="mt-8 p-4 bg-teal-50 rounded-lg border border-teal-200 text-center">
             <p className="text-sm text-gray-700 mb-3">
-              Want to sell on ProcureNP?
+              Want to sell on Procure Nepal?
             </p>
             <Link 
-              to="/seller-register" 
-              className="inline-block bg-black hover:bg-gray-900 text-white px-6 py-2 rounded-lg font-semibold transition-colors text-sm uppercase"
+              to="/register" 
+              className="inline-block bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
             >
-              Become a Seller
+              Sign Up
             </Link>
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-8 text-center text-sm text-gray-600">
+          <p>By signing in, you agree to our <a href="#" className="text-teal-600 hover:underline">Terms of Service</a> and <a href="#" className="text-teal-600 hover:underline">Privacy Policy</a></p>
         </div>
       </div>
     </div>
@@ -190,4 +154,3 @@ function Login() {
 }
 
 export default Login
-// Commit: 2026-01-01 Ujjwal

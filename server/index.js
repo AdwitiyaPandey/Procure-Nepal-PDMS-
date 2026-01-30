@@ -11,7 +11,8 @@ import authRoutes from './routes/auth.js'
 import productRoutes from './routes/products.js'
 import categoryRoutes from './routes/categories.js'
 import quoteRoutes from './routes/quoteRequests.js'
-import adminRoutes from './routes/admin.js'
+import adminRoutes from './routes/adminRoutes.js'
+import sellerProductRoutes from './routes/sellerProductRoutes.js'
 import favouriteRoutes from './routes/favourites.js'
 
 const app = express()
@@ -35,6 +36,7 @@ app.use('/api/products', productRoutes)
 app.use('/api/categories', categoryRoutes)
 app.use('/api/quote-requests', quoteRoutes)
 app.use('/api/admin', adminRoutes)
+app.use('/api/seller/products', sellerProductRoutes)
 app.use('/api/favourites', favouriteRoutes)
 
 // 404 handler

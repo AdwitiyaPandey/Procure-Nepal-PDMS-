@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../AuthContext'
 
 function useQuery() {
   return new URLSearchParams(useLocation().search)
@@ -9,9 +10,11 @@ function SearchResults() {
   const query = useQuery()
   const navigate = useNavigate()
   const [products, setProducts] = useState([])
+  const [wishlist, setWishlist] = useState(new Set())
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [total, setTotal] = useState(0)
+  const { user } = useAuth()
   const [filters, setFilters] = useState({
     q: query.get('q') || '',
     category: query.get('category') || '',
@@ -24,7 +27,20 @@ function SearchResults() {
     try {
       const res = await fetch('http://localhost:4000/api/categories')
       const data = await res.json()
-      setCategories(data)
+      // Normalize categories to an array of names (strings)
+      let names = []
+      if (Array.isArray(data) && data.length > 0) {
+        if (typeof data[0] === 'object') {
+          names = data.map(cat => cat.name || String(cat))
+        } else {
+          names = data
+        }
+      } else if (data && Array.isArray(data.categories)) {
+        names = data.categories.map(cat => (typeof cat === 'object' ? cat.name || String(cat) : cat))
+      } else {
+        names = []
+      }
+      setCategories(names)
     } catch (err) {
       console.error('Error fetching categories:', err)
     }
@@ -55,6 +71,24 @@ function SearchResults() {
   }, [fetchCategories])
 
   useEffect(() => {
+    // load favourites for signed in users
+    const loadFavs = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        if (!token || !user) return
+        const res = await fetch('http://localhost:4000/api/favourites', { headers: { Authorization: `Bearer ${token}` } })
+        if (!res.ok) return
+        const data = await res.json()
+        const favIds = new Set((data.data || []).map(f => f.product.id))
+        setWishlist(favIds)
+      } catch (err) {
+        console.error('Failed to load favourites', err)
+      }
+    }
+    loadFavs()
+  }, [user])
+
+  useEffect(() => {
     fetchProducts()
   }, [fetchProducts])
 
@@ -79,21 +113,24 @@ function SearchResults() {
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Link to="/" className="text-teal-600 hover:text-teal-700 font-medium">
-              ← Back to Home
-            </Link>
-            <div className="flex-1">
-              <input
-                type="text"
-                value={filters.q}
-                onChange={(e) => handleFilterChange('q', e.target.value)}
-                placeholder="Search products..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500"
-              />
+            <div className="flex items-center gap-4">
+              <Link to="/" className="text-teal-600 hover:text-teal-700 font-medium">
+                ← Back to Home
+              </Link>
+              <div className="flex-1">
+                <input
+                  type="text"
+                  value={filters.q}
+                  onChange={(e) => handleFilterChange('q', e.target.value)}
+                  placeholder="Search products..."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500"
+                />
+              </div>
+              <div className="hidden sm:block">
+                <Link to="/favourites" className="ml-4 text-gray-700 hover:text-gray-900 font-medium text-sm">Favourites</Link>
+              </div>
             </div>
           </div>
-        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6">
@@ -192,7 +229,8 @@ function SearchResults() {
                     <div className="aspect-square bg-gray-100 relative">
                       {product.image ? (
                         <img 
-                          src={`http://localhost:4000${product.image}`} 
+                          loading="lazy"
+                          src={product.image}
                           alt={product.name}
                           className="w-full h-full object-cover"
                         />
@@ -224,14 +262,38 @@ function SearchResults() {
                       </div>
 
                       <div className="flex gap-2">
-                        <Link 
-                          to={`/request-quote/${product.id}`}
-                          className="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-center py-2 px-4 rounded-md text-sm font-medium transition-colors"
+                        <button
+                          onClick={() => {
+                            const phoneRaw = product.supplier?.user?.phone || ''
+                            let phone = phoneRaw.replace(/\D/g, '')
+                            if (phone.length === 10) phone = '977' + phone
+                            const text = encodeURIComponent(`Can I know more about ${product.name}? ${product.description || ''}`)
+                            const url = `https://wa.me/${phone}?text=${text}`
+                            window.open(url, '_blank')
+                          }}
+                          className="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-center py-2 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
                         >
-                          Request Quote
-                        </Link>
-                        <button className="px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-                          <i className="bi bi-heart"></i>
+                          <i className="bi bi-whatsapp text-lg"></i>
+                          <span>Request Quote</span>
+                        </button>
+                        <button onClick={async (e) => {
+                          e.preventDefault()
+                          const pid = product.id
+                          try {
+                            const token = localStorage.getItem('token')
+                            if (!token) { alert('Please sign in to add favourites'); return }
+                            if (wishlist.has(pid)) {
+                              const res = await fetch(`http://localhost:4000/api/favourites/${pid}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
+                              if (res.ok) {
+                                const next = new Set(wishlist); next.delete(pid); setWishlist(next)
+                              }
+                            } else {
+                              const res = await fetch('http://localhost:4000/api/favourites/add', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ productId: pid }) })
+                              if (res.ok) { const next = new Set(wishlist); next.add(pid); setWishlist(next) }
+                            }
+                          } catch (err) { console.error(err) }
+                        }} className="px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                          <i className={`bi ${wishlist.has(product.id) ? 'bi-heart-fill text-red-500' : 'bi-heart text-gray-600'}`}></i>
                         </button>
                       </div>
                     </div>

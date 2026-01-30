@@ -240,12 +240,15 @@ router.post('/login', async (req, res) => {
 
     // Check if seller is approved
     if (user.role === 'seller' && user.supplier && user.supplier.status !== 'approved') {
-      return res.status(403).json({
-        error:
-          user.supplier.status === 'pending'
-            ? 'Your seller account is pending approval'
-            : 'Your seller account has been rejected',
-      })
+      const status = user.supplier.status
+      const message =
+        status === 'pending'
+          ? 'Your seller account is pending approval'
+          : status === 'blocked'
+          ? 'Your seller account has been blocked'
+          : 'Your seller account has been rejected'
+
+      return res.status(403).json({ error: message })
     }
 
     // Generate token

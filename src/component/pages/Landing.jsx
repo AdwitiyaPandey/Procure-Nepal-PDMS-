@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, lazy, Suspense } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../AuthContext'
-import Landingbanner from '../Landingbanner'
-import Categories from '../Categories'
+const Landingbanner = lazy(() => import('../Landingbanner'))
+const Categories = lazy(() => import('../Categories'))
 
 function Landing() {
     const [query, setQuery] = useState('')
@@ -25,7 +25,8 @@ function Landing() {
     }
 
     return (
-        <>
+        <div className="min-h-screen flex flex-col">
+            <main className="flex-grow">
             {/* NAVBAR */}
             <nav className="w-full bg-white border-b border-gray-200 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -78,10 +79,17 @@ function Landing() {
                                         <i className="bi bi-heart text-lg group-hover:scale-110 transition-transform"></i>
                                         <span className="hidden sm:inline uppercase">Favourites</span>
                                     </Link>
-                                    <div className="hidden sm:flex items-center gap-2 border-r border-gray-200 pr-4">
-                                        <i className="bi bi-person-circle text-gray-600"></i>
-                                        <span className="text-gray-700 font-medium text-sm">{user.displayName || user.email.split('@')[0]}</span>
-                                    </div>
+                                    {user.role === 'seller' ? (
+                                        <Link to="/supplier-dashboard" className="hidden sm:flex items-center gap-2 border-r border-gray-200 pr-4">
+                                            <i className="bi bi-person-circle text-gray-600"></i>
+                                            <span className="text-gray-700 font-medium text-sm">{user.displayName || user.email.split('@')[0]}</span>
+                                        </Link>
+                                    ) : (
+                                        <div className="hidden sm:flex items-center gap-2 border-r border-gray-200 pr-4">
+                                            <i className="bi bi-person-circle text-gray-600"></i>
+                                            <span className="text-gray-700 font-medium text-sm">{user.displayName || user.email.split('@')[0]}</span>
+                                        </div>
+                                    )}
                                     {user.role === 'supplier' && (
                                         <Link to="/supplier-dashboard" className="text-teal-600 hover:text-teal-700 font-medium text-sm transition-colors hidden sm:inline">
                                             Dashboard
@@ -166,9 +174,62 @@ function Landing() {
                 </div>
             </div>
 
-            <Landingbanner />
-            <Categories />
-        </>
+                                <Suspense fallback={<div className="py-12 text-center">Loading...</div>}>
+                                        <Landingbanner />
+                                        <Categories />
+                                </Suspense>
+                        </main>
+
+                        {/* Footer moved here so it stays at bottom of the page */}
+                        <footer className="bg-gray-900 text-gray-200 mt-auto">
+                                <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+                                    <div>
+                                        <h4 className="font-semibold mb-3 text-white">Company</h4>
+                                        <ul className="space-y-2 text-sm">
+                                            <li><a href="#" className="hover:underline">About ProcureNP</a></li>
+                                            <li><a href="#" className="hover:underline">Careers</a></li>
+                                            <li><a href="mailto:procurenepal@gmail.com" className="hover:underline">Contact</a></li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold mb-3 text-white">Business</h4>
+                                        <ul className="space-y-2 text-sm">
+                                            <li><a href="#" className="hover:underline">Sell on ProcureNP</a></li>
+                                            <li><a href="#" className="hover:underline">Supplier Help</a></li>
+                                            <li><a href="#" className="hover:underline">Buyer Help</a></li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold mb-3 text-white">Business & Trade</h4>
+                                        <ul className="space-y-2 text-sm">
+                                            <li><a href="#" className="hover:underline">Market Insights</a></li>
+                                            <li><a href="#" className="hover:underline">Trade Directories</a></li>
+                                            <li><a href="#" className="hover:underline">Import / Export Guides</a></li>
+                                            <li><a href="#" className="hover:underline">Trade Events & Conferences</a></li>
+                                            <li><a href="#" className="hover:underline">Government Resources</a></li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold mb-3 text-white">News</h4>
+                                        <ul className="space-y-2 text-sm">
+                                            <li><a href="https://ekantipur.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Ekantipur</a></li>
+                                            <li><a href="https://kathmandupost.com" target="_blank" rel="noopener noreferrer" className="hover:underline">The Kathmandu Post</a></li>
+                                            <li><a href="https://english.onlinekhabar.com" target="_blank" rel="noopener noreferrer" className="hover:underline">OnlineKhabar</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="border-t border-gray-800 py-4">
+                                    <div className="max-w-7xl mx-auto px-6 text-sm text-gray-400 flex items-center justify-between">
+                                        <div>© {new Date().getFullYear()} ProcureNP. All rights reserved.</div>
+                                        <div className="space-x-4">
+                                            <a href="#" className="hover:underline">Facebook</a>
+                                            <a href="#" className="hover:underline">Instagram</a>
+                                            <a href="#" className="hover:underline">LinkedIn</a>
+                                        </div>
+                                    </div>
+                                </div>
+                        </footer>
+                </div>
     )
 }
 

@@ -59,6 +59,10 @@ export const CreateProductSchema = z.object({
   price: z.number().positive('Price must be greater than 0'),
   quantity: z.number().int().positive('Quantity must be greater than 0'),
   marginPercentage: z.number().nonnegative('Margin percentage cannot be negative').default(20),
+  // Optional product fields from supplier dashboard
+  location: z.string().optional(),
+  deliveryAvailable: z.boolean().optional(),
+  deliveryCharge: z.number().nonnegative().optional(),
   image: z.any().optional(),
 })
 

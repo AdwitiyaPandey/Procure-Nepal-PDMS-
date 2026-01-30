@@ -127,6 +127,10 @@ const GetStarted = () => {
       formData.append('citizenship', form.citizenship)
       formData.append('establishedDate', form.establishedDate)
       formData.append('turnover', form.turnover)
+      
+      // include confirmPassword so server-side validation passes
+      formData.append('confirmPassword', form.confirmPassword)
+      
       formData.append('agreeToTerms', form.agreeToTerms ? '1' : '0')
       formData.append('password', form.password)
 

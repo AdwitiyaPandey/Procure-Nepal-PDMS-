@@ -18,6 +18,7 @@ export function authenticateToken(req, res, next) {
   })
 }
 
+
 export function optionalAuth(req, res, next) {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]

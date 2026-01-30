@@ -15,6 +15,7 @@ const upload = multer({
       'image/png',
     ]
 
+    
     if (allowedMimes.includes(file.mimetype)) {
       cb(null, true)
     } else {

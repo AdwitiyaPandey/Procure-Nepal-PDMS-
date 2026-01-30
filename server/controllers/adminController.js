@@ -13,7 +13,7 @@ export async function adminLogin(req, res) {
       return res.status(401).json({ error: 'Invalid credentials' })
     }
 
-    // Verify password using bcrypt (passwords are hashed in DB)
+ 
     const isValid = await bcrypt.compare(password, user.passwordHash)
     if (!isValid) {
       return res.status(401).json({ error: 'Invalid credentials' })
@@ -28,7 +28,7 @@ export async function adminLogin(req, res) {
 }
 
 export async function getSuppliers(req, res) {
-  // simple pass-through to existing prisma usage inside routes
+ 
   const prisma = (await import('../config/prisma.js')).default
   try {
     const suppliers = await prisma.supplier.findMany({ include: { user: true } })

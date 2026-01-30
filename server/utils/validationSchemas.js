@@ -18,11 +18,11 @@ export const RegisterSellerSchema = z.object({
   email: z.string().email('Invalid email address'),
   // exactly 10 digits
   phone: z.string().regex(/^\d{10}$/, 'Phone must be exactly 10 digits'),
-  // strong password requirement
+ 
   password: z.string().min(8, 'Password must be at least 8 characters').regex(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)/, 'Password must include uppercase, lowercase, number and special character'),
   confirmPassword: z.string(),
   companyName: z.string().min(2, 'Company name must be at least 2 characters'),
-  // use numeric-only fields and align keys with frontend form
+  
   panNumber: z.string().regex(/^\d+$/, 'PAN must contain only numbers').min(9, 'PAN must be at least 9 digits'),
   vatNumber: z.string().regex(/^\d+$/, 'VAT must contain only numbers').optional(),
   turnover: z.string().regex(/^\d+$/, 'Turnover must be numeric').optional(),
@@ -59,7 +59,7 @@ export const CreateProductSchema = z.object({
   price: z.number().positive('Price must be greater than 0'),
   quantity: z.number().int().positive('Quantity must be greater than 0'),
   marginPercentage: z.number().nonnegative('Margin percentage cannot be negative').default(20),
-  // Optional product fields from supplier dashboard
+ 
   location: z.string().optional(),
   deliveryAvailable: z.boolean().optional(),
   deliveryCharge: z.number().nonnegative().optional(),

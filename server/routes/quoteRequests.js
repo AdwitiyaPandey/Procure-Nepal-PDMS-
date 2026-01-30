@@ -5,13 +5,13 @@ import { QuoteRequestSchema } from '../utils/validationSchemas.js'
 
 const router = express.Router()
 
-// Create quote request
+
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const validatedData = QuoteRequestSchema.parse(req.body)
     const productId = parseInt(req.body.productId)
 
-    // Check if product exists
+   
     const product = await prisma.product.findUnique({
       where: { id: productId },
     })
@@ -96,7 +96,7 @@ router.get('/user/my-requests', authenticateToken, async (req, res) => {
   }
 })
 
-// Get supplier's quote requests (for their products)
+
 router.get('/supplier/received', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'seller') {
@@ -144,7 +144,7 @@ router.get('/supplier/received', authenticateToken, async (req, res) => {
   }
 })
 
-// Get quote request by ID
+
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const quoteRequest = await prisma.quoteRequest.findUnique({

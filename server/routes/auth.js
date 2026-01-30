@@ -17,7 +17,7 @@ import { authenticateToken } from '../middleware/auth.js'
 
 const router = express.Router()
 
-// Helper to generate JWT token
+
 function generateToken(user) {
   return jwt.sign(
     { id: user.id, email: user.email, role: user.role },
@@ -31,7 +31,7 @@ router.post('/register/buyer', upload.single('profilePhoto'), async (req, res) =
   try {
     const validatedData = RegisterBuyerSchema.parse(req.body)
 
-    // Check if user already exists
+    
     const existingUser = await prisma.user.findUnique({
       where: { email: validatedData.email },
     })
@@ -40,7 +40,7 @@ router.post('/register/buyer', upload.single('profilePhoto'), async (req, res) =
       return res.status(400).json({ error: 'Email already registered' })
     }
 
-    // Check if phone exists
+   
     const existingPhone = await prisma.user.findUnique({
       where: { phone: validatedData.phone },
     })
@@ -49,11 +49,11 @@ router.post('/register/buyer', upload.single('profilePhoto'), async (req, res) =
       return res.status(400).json({ error: 'Phone number already registered' })
     }
 
-    // Hash password
+   
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(validatedData.password, salt)
 
-    // Note: `profilePhoto` column removed from the database; ignore uploaded file if present
+    
 
     // Create user
     const user = await prisma.user.create({
@@ -97,10 +97,10 @@ router.post('/register/buyer', upload.single('profilePhoto'), async (req, res) =
 // Register Seller
 router.post('/register/seller', upload.single('profilePhoto'), async (req, res) => {
   try {
-    // Parse and validate the seller data
+    
     const validatedData = RegisterSellerSchema.parse(req.body)
 
-    // Check if user already exists
+   
     const existingUser = await prisma.user.findUnique({
       where: { email: validatedData.email },
     })
@@ -109,7 +109,7 @@ router.post('/register/seller', upload.single('profilePhoto'), async (req, res) 
       return res.status(400).json({ error: 'Email already registered' })
     }
 
-    // Check if phone exists
+    
     const existingPhone = await prisma.user.findUnique({
       where: { phone: validatedData.phone },
     })
@@ -118,7 +118,7 @@ router.post('/register/seller', upload.single('profilePhoto'), async (req, res) 
       return res.status(400).json({ error: 'Phone number already registered' })
     }
 
-    // Check if PAN already exists
+    
     const existingPAN = await prisma.supplier.findUnique({
       where: { pan: validatedData.panNumber },
     })
@@ -131,9 +131,7 @@ router.post('/register/seller', upload.single('profilePhoto'), async (req, res) 
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(validatedData.password, salt)
 
-    // Note: `profilePhoto` column removed from the database; ignore uploaded file if present
-
-    // Create user and supplier in a transaction
+    
     const user = await prisma.user.create({
       data: {
         fullname: validatedData.fullname,
@@ -190,7 +188,7 @@ router.post('/login', async (req, res) => {
   try {
     const validatedData = LoginSchema.parse(req.body)
 
-    // Find user by email
+    
     const user = await prisma.user.findUnique({
       where: { email: validatedData.email },
       include: { supplier: true },
@@ -200,14 +198,14 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' })
     }
 
-    // Verify password
+
     const isPasswordValid = await bcrypt.compare(validatedData.password, user.passwordHash)
 
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid email or password' })
     }
 
-    // Check if seller is approved
+
     if (user.role === 'seller' && user.supplier && user.supplier.status !== 'approved') {
       const status = user.supplier.status
       const message =

@@ -148,7 +148,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-// Get product by ID
+
 router.get('/:id', async (req, res) => {
   try {
     const product = await prisma.product.findUnique({
@@ -208,7 +208,7 @@ router.put('/:id', authenticateToken, upload.single('image'), async (req, res) =
       return res.status(403).json({ error: 'You can only update your own products' })
     }
 
-    // Validate data (partial validation)
+   
     const updateData = {}
     if (req.body.name) updateData.name = req.body.name
     if (req.body.description) updateData.description = req.body.description
@@ -282,7 +282,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
   }
 })
 
-// Get seller's products
+
 router.get('/seller/:supplierId', async (req, res) => {
   try {
     const supplierId = parseInt(req.params.supplierId)

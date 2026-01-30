@@ -6,7 +6,7 @@ import path from 'path'
 
 const router = express.Router()
 
-// Middleware to check if user is admin
+
 async function isAdmin(req, res, next) {
   try {
     const user = await prisma.user.findUnique({
@@ -23,7 +23,7 @@ async function isAdmin(req, res, next) {
   }
 }
 
-// Get all suppliers (pending, approved, rejected)
+
 router.get('/suppliers', authenticateToken, isAdmin, async (req, res) => {
   try {
     const { status = 'all', page = 1, limit = 10 } = req.query
@@ -74,7 +74,7 @@ router.get('/suppliers', authenticateToken, isAdmin, async (req, res) => {
   }
 })
 
-// Get single supplier details
+
 router.get('/suppliers/:id', authenticateToken, isAdmin, async (req, res) => {
   try {
     const supplier = await prisma.supplier.findUnique({
@@ -103,7 +103,7 @@ router.get('/suppliers/:id', authenticateToken, isAdmin, async (req, res) => {
   }
 })
 
-// Approve supplier registration
+
 router.patch('/suppliers/:id/approve', authenticateToken, isAdmin, async (req, res) => {
   try {
     const supplierId = parseInt(req.params.id)
@@ -135,7 +135,7 @@ router.patch('/suppliers/:id/approve', authenticateToken, isAdmin, async (req, r
       },
     })
 
-    // Here you could send an approval email to the seller
+    
     console.log(`Supplier ${supplier.companyName} approved`)
 
     res.json({
@@ -148,7 +148,7 @@ router.patch('/suppliers/:id/approve', authenticateToken, isAdmin, async (req, r
   }
 })
 
-// Reject supplier registration
+
 router.patch('/suppliers/:id/reject', authenticateToken, isAdmin, async (req, res) => {
   try {
     const { reason } = req.body
@@ -185,7 +185,7 @@ router.patch('/suppliers/:id/reject', authenticateToken, isAdmin, async (req, re
       },
     })
 
-    // Here you could send a rejection email to the seller
+    
     console.log(`Supplier ${supplier.companyName} rejected: ${reason}`)
 
     res.json({
@@ -198,7 +198,7 @@ router.patch('/suppliers/:id/reject', authenticateToken, isAdmin, async (req, re
   }
 })
 
-// Get dashboard stats
+
 router.get('/stats/overview', authenticateToken, isAdmin, async (req, res) => {
   try {
     const [buyersCount, sellersCount, pendingSuppliersCount, approvedSuppliersCount, productsCount, quotesCount] =
@@ -225,7 +225,7 @@ router.get('/stats/overview', authenticateToken, isAdmin, async (req, res) => {
   }
 })
 
-// Get all quote requests
+
 router.get('/quote-requests', authenticateToken, isAdmin, async (req, res) => {
   try {
     const { status = 'all', page = 1, limit = 10 } = req.query
@@ -275,12 +275,12 @@ router.get('/quote-requests', authenticateToken, isAdmin, async (req, res) => {
   }
 })
 
-// Seed demo products endpoint
+
 router.post('/seed-products', async (req, res) => {
   try {
     console.log('🌱 Starting product seed...')
 
-    // Load products from JSON
+   
     const productsPath = path.join(process.cwd(), 'data', 'products.json')
     
     if (!fs.existsSync(productsPath)) {
@@ -297,7 +297,7 @@ router.post('/seed-products', async (req, res) => {
     let supplier = await prisma.supplier.findFirst()
     
     if (!supplier) {
-      // Create a demo user first if needed
+      
       let user = await prisma.user.findFirst({ where: { email: 'admin@procurenp.com' } })
       
       if (!user) {
@@ -312,7 +312,7 @@ router.post('/seed-products', async (req, res) => {
         })
       }
 
-      // Create supplier for the user
+    
       supplier = await prisma.supplier.create({
         data: {
           userId: user.id,
@@ -322,10 +322,10 @@ router.post('/seed-products', async (req, res) => {
       })
     }
 
-    // Now seed products
+    
     for (const product of productsData) {
       try {
-        // Check if product already exists
+      
         const existingProduct = await prisma.product.findFirst({
           where: { name: product.name }
         })

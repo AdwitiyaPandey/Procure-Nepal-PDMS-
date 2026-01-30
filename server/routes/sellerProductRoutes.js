@@ -9,4 +9,5 @@ router.get('/', authenticateToken, listProducts)
 router.patch('/:id', authenticateToken, updateProduct)
 router.delete('/:id', authenticateToken, deleteProduct)
 
+
 export default router

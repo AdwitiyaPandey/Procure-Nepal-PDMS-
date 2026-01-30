@@ -5,7 +5,7 @@ export async function createProduct(req, res) {
     const sellerUserId = req.user.id
     const { name, description, category, price, quantity, marginPercentage } = req.body
 
-    // Ensure user is a seller
+    
     if (req.user.role !== 'seller') return res.status(403).json({ error: 'Only sellers can create products' })
 
     const supplier = await prisma.supplier.findUnique({ where: { userId: sellerUserId } })
@@ -75,6 +75,8 @@ export async function updateProduct(req, res) {
     res.status(500).json({ error: 'Failed to update product' })
   }
 }
+
+
 
 export async function deleteProduct(req, res) {
   try {

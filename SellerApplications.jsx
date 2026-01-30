@@ -21,6 +21,7 @@ const sampleApplications = [
     status: "approved",
     note: "Handmade goods, 5 years experience",
   },
+  
   {
     id: 3,
     name: "Bishal Rai",

@@ -216,6 +216,7 @@ kill -9 <PID>
 
 ## Production Deployment
 
+
 ### Requirements
 - Node.js 16+
 - PostgreSQL database (Supabase, AWS RDS, etc.)

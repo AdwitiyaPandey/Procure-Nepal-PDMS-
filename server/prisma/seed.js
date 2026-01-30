@@ -36,7 +36,7 @@ async function seed() {
       console.log(`✅ Created category: ${category.name}`)
     }
 
-    // Load and seed products
+  
     const productsPath = path.join(process.cwd(), 'data', 'products.json')
     
     if (fs.existsSync(productsPath)) {
@@ -47,7 +47,7 @@ async function seed() {
       // Get or find a supplier to attach products to
       let supplier = await prisma.supplier.findFirst()
       
-      // If no suppliers exist, we'll try to get the first one or skip supplier attachment
+     
       const supplierId = supplier?.id || 1
       
       for (const product of productsData) {
@@ -84,7 +84,7 @@ async function seed() {
     console.log('🎉 Seed completed successfully!')
   } catch (error) {
     console.error('❌ Seed error:', error.message)
-    // Don't exit, allow categories to be created even if products fail
+    
   } finally {
     await prisma.$disconnect()
   }

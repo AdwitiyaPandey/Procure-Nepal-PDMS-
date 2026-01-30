@@ -110,7 +110,7 @@ router.get('/', authenticateToken, async (req, res) => {
   }
 })
 
-// Check if product is in favorites
+
 router.get('/check/:productId', authenticateToken, async (req, res) => {
   try {
     const { productId } = req.params

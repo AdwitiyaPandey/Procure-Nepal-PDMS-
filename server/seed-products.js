@@ -22,7 +22,7 @@ async function seedProducts() {
     let seededCount = 0
     let skippedCount = 0
 
-    // First, ensure at least one supplier exists for demo
+    
     let supplier = await prisma.supplier.findFirst()
     
     if (!supplier) {
@@ -61,7 +61,7 @@ async function seedProducts() {
     console.log(`📦 Seeding ${productsData.length} products...`)
     for (const product of productsData) {
       try {
-        // Check if product already exists
+        
         const existingProduct = await prisma.product.findFirst({
           where: { name: product.name }
         })
@@ -103,5 +103,6 @@ async function seedProducts() {
     await prisma.$disconnect()
   }
 }
+
 
 seedProducts()

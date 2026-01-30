@@ -27,4 +27,3 @@ export async function deleteFromCloudinary(publicId) {
   return result
 }
 
-// Commit: 2026-01-29 Ujjwal

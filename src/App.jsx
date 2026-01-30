@@ -17,6 +17,7 @@ import SellerRegistered from './component/pages/SellerRegistered'
 
 function App() {
   return (
+
     <AuthProvider>
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
@@ -40,4 +41,4 @@ function App() {
 
 export default App
 
-// Commit: 2026-01-29 Ujjwal
+

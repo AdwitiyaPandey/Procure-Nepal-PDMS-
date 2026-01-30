@@ -148,4 +148,3 @@ export function AuthProvider({ children }) {
 
 export default AuthContext
 
-// Commit: 2026-01-29 Ujjwal

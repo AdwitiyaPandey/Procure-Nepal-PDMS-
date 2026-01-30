@@ -36,7 +36,7 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-// Create category (admin only - seeded via migration)
+
 router.post('/', async (req, res) => {
   try {
     const validatedData = CreateCategorySchema.parse(req.body)

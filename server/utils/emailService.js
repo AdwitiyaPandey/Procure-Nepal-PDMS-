@@ -10,13 +10,12 @@ const transporter = nodemailer.createTransport({
 })
 
 export async function sendPasswordResetEmail(email, otpOrLink, fullname = null) {
-  // If second parameter looks like an OTP (6 digits), send OTP email
-  // Otherwise, send reset link email
+  
   const isOTP = /^\d{6}$/.test(otpOrLink)
 
   let mailOptions
   if (isOTP) {
-    // OTP email
+    
     mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
@@ -35,7 +34,7 @@ export async function sendPasswordResetEmail(email, otpOrLink, fullname = null) 
       `,
     }
   } else {
-    // Reset link email (for backwards compatibility)
+ 
     mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,

@@ -1,0 +1,39 @@
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  role VARCHAR(20) CHECK (role IN ('buyer', 'supplier')) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+SELECT * FROM users;
+
+CREATE TABLE products (
+  id SERIAL PRIMARY KEY,
+  supplier_id INT REFERENCES users(id),
+  name VARCHAR(100) NOT NULL,
+  price NUMERIC NOT NULL,
+  stock INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE orders (
+  id SERIAL PRIMARY KEY,
+  buyer_id INT REFERENCES users(id),
+  product_id INT REFERENCES products(id),
+  quantity INT NOT NULL,
+  total_price NUMERIC NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE users
+DROP CONSTRAINT users_role_check;
+
+ALTER TABLE users
+ADD CONSTRAINT users_role_check
+CHECK (role IN ('buyer', 'supplier', 'admin'));
+
+INSERT INTO users (name, email, password, role)
+VALUES ('Admin', 'admin@procure.local', 'AdminPass123', 'admin');

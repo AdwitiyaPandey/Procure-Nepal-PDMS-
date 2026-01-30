@@ -51,9 +51,9 @@ Manage demo and platform products
 
 Frontend: React 
 
-Backend: Node.js 
+Backend: Node.js, Express.js
 
-Database: PostgreSQL (pgAdmin) 
+Database: PostgreSQL (SupaBase) 
 
 Media Storage: Cloudinary 
 

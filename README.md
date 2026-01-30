@@ -27,8 +27,6 @@ Searchable product catalog
 
 Add products to wishlist / shortlist
 
-MOQ-based quote requests
-
 One-click communication via WhatsApp
 
 **🏭 Supplier**
@@ -45,7 +43,6 @@ Supplier verification (PAN / VAT)
 
 Approve or block suppliers
 
-Manage demo and platform products
 
 <u>**🛠️ Tech Stack**</u>
 
@@ -57,19 +54,9 @@ Database: PostgreSQL (SupaBase)
 
 Media Storage: Cloudinary 
 
-Communication: WhatsApp & Discord (third-party integrations) 
+Communication: WhatsApp (third-party integrations) 
 
-<u>**🗺️ Roadmap**</u>
 
-Multi-image product uploads
-
-Payment & escrow integration
-
-Logistics partnerships
-
-Supplier analytics dashboard
-
-Personalized onboarding for institutional buyers
 
 **👥 Team**
 

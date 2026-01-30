@@ -81,7 +81,7 @@ function Categories() {
     <section className="py-16 md:py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Popular Categories</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3" style={{ letterSpacing: '0.07em', lineHeight: 1.7 }}>Popular Categories</h2>
           <p className="text-gray-600">Browse products across different industries</p>
         </div>
 

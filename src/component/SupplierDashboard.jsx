@@ -7,6 +7,7 @@ function SupplierDashboard() {
   const navigate = useNavigate()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
+  const [profile, setProfile] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [error, setError] = useState('')
@@ -30,15 +31,39 @@ function SupplierDashboard() {
 
   useEffect(() => {
     if (!user) return
-    fetchProducts()
+    // fetch freshest profile (includes supplier fields linked by user id)
+    fetchProfile()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
-  async function fetchProducts() {
+  async function fetchProfile() {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) return
+      const res = await fetch(`${API_BASE}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
+      if (!res.ok) return
+      const data = await res.json()
+      // auth /me returns { user: { ... } }
+      const u = data.user || data
+      setProfile(u)
+      // after profile, fetch products by supplier id
+      const supplierId = u?.supplier?.id
+      if (supplierId) await fetchProducts(supplierId)
+      else await fetchProducts()
+    } catch (err) {
+      console.error('Failed to fetch profile', err)
+    }
+  }
+
+  async function fetchProducts(explicitSupplierId) {
     setLoading(true)
     try {
-      // fetch by supplier id (from auth user.supplier)
-      const supplierId = user?.supplier?.id
+      // prefer explicit supplier id from profile, fallback to user.supplier
+      const supplierId = explicitSupplierId ?? profile?.supplier?.id ?? user?.supplier?.id
+      if (!supplierId) {
+        setProducts([])
+        return
+      }
       const res = await fetch(`${API_BASE}/api/products/seller/${supplierId}`)
       const list = await res.json()
       setProducts(Array.isArray(list) ? list : [])
@@ -183,12 +208,26 @@ function SupplierDashboard() {
             <h1 className="text-3xl font-bold text-gray-800">Supplier Dashboard</h1>
             <p className="text-gray-600">Manage your products</p>
           </div>
-          <button
-            onClick={() => { setShowForm(!showForm); if (!showForm) resetForm() }}
-            className="bg-black text-white px-4 py-2 rounded-md"
-          >
-            {showForm ? 'Cancel' : '➕ Add Product'}
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/search')}
+              className="bg-gray-800 text-white px-3 py-2 rounded-md text-sm"
+            >
+              Browse Products
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="border border-gray-300 px-3 py-2 rounded-md text-sm"
+            >
+              Home
+            </button>
+            <button
+              onClick={() => { setShowForm(!showForm); if (!showForm) resetForm() }}
+              className="bg-black text-white px-4 py-2 rounded-md"
+            >
+              {showForm ? 'Cancel' : '➕ Add Product'}
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -198,13 +237,16 @@ function SupplierDashboard() {
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                 <i className="bi bi-person text-3xl text-gray-400"></i>
               </div>
-              <h3 className="text-lg font-semibold">{user.fullname || user.name || 'Seller'}</h3>
-              <p className="text-sm text-gray-500 mt-1">{user.email || 'No email'}</p>
-              <p className="text-sm text-gray-500">{user.phone || 'No phone'}</p>
+              <h3 className="text-lg font-semibold">{(profile?.fullname ?? user?.fullname) || user?.name || 'Seller'}</h3>
+              <p className="text-sm text-gray-500 mt-1">{profile?.email ?? user?.email ?? 'No email'}</p>
+              <p className="text-sm text-gray-500">{profile?.phone ?? user?.phone ?? 'No phone'}</p>
               <div className="mt-4 w-full text-left">
                 <h4 className="text-sm font-medium text-gray-700">Business</h4>
-                <p className="text-sm text-gray-600">{user.companyName || user.businessName || '—'}</p>
-                <p className="text-sm text-gray-600">PAN: {user.panNumber || '—'}</p>
+                <p className="text-sm text-gray-600">{profile?.supplier?.companyName ?? user?.companyName ?? user?.businessName ?? '—'}</p>
+                <p className="text-sm text-gray-600">PAN: {profile?.supplier?.pan ?? user?.panNumber ?? '—'}</p>
+                <p className="text-sm text-gray-600">VAT: {profile?.supplier?.vat ?? '—'}</p>
+                <p className="text-sm text-gray-600">Turnover: {profile?.supplier?.turnover ?? '—'}</p>
+                <p className="text-sm text-gray-600">Citizenship: {profile?.supplier?.citizenship ?? '—'}</p>
               </div>
               {/* 'Update my profile' button removed per request */}
             </div>

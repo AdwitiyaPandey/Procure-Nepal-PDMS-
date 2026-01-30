@@ -48,7 +48,6 @@ router.get('/suppliers', authenticateToken, isAdmin, async (req, res) => {
               fullname: true,
               email: true,
               phone: true,
-              profilePhoto: true,
             },
           },
           products: {
@@ -87,7 +86,6 @@ router.get('/suppliers/:id', authenticateToken, isAdmin, async (req, res) => {
             fullname: true,
             email: true,
             phone: true,
-            profilePhoto: true,
           },
         },
         products: true,

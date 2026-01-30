@@ -1,21 +1,30 @@
 import jwt from 'jsonwebtoken'
-import process from 'process'
+import bcrypt from 'bcryptjs'
 
-export function adminLogin(req, res) {
+export async function adminLogin(req, res) {
   const { username, password } = req.body
-  const adminUser = process.env.ADMIN_USER
-  const adminPass = process.env.ADMIN_PASS
+  try {
+    const prisma = (await import('../config/prisma.js')).default
 
-  if (!adminUser || !adminPass) {
-    return res.status(500).json({ error: 'Admin credentials not configured' })
+    // Find user by email (username) and ensure role is admin
+    const user = await prisma.user.findUnique({ where: { email: username } })
+
+    if (!user || user.role !== 'admin') {
+      return res.status(401).json({ error: 'Invalid credentials' })
+    }
+
+    // Verify password using bcrypt (passwords are hashed in DB)
+    const isValid = await bcrypt.compare(password, user.passwordHash)
+    if (!isValid) {
+      return res.status(401).json({ error: 'Invalid credentials' })
+    }
+
+    const token = jwt.sign({ role: 'admin', id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' })
+    res.json({ token })
+  } catch (err) {
+    console.error('Admin login error:', err)
+    res.status(500).json({ error: 'Admin login failed' })
   }
-
-  if (username !== adminUser || password !== adminPass) {
-    return res.status(401).json({ error: 'Invalid credentials' })
-  }
-
-  const token = jwt.sign({ role: 'admin', username }, process.env.JWT_SECRET, { expiresIn: '7d' })
-  res.json({ token })
 }
 
 export async function getSuppliers(req, res) {

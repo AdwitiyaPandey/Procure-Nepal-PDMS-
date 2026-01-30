@@ -17,7 +17,6 @@ model User {
   email             String            @unique
   phone             String            @unique
   passwordHash      String
-  profilePhoto      String?
   role              String            @default("buyer") // "buyer" or "seller"
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt

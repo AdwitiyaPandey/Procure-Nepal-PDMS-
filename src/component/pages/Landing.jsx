@@ -144,9 +144,6 @@ function Landing() {
                                                                 >
                                                                     <span>Products</span>
                                                                 </button>
-                                                                <Link to="#" className="text-gray-600 hover:text-gray-900 font-medium text-sm transition-colors">
-                                                                    Post Requirements
-                                                                </Link>
                                                             </div>
                                                         </div>
                                                         </nav>

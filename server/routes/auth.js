@@ -2,7 +2,6 @@ import express from 'express'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import prisma from '../config/prisma.js'
-import crypto from 'crypto'
 import process from 'process'
 import {
   RegisterBuyerSchema,
@@ -54,20 +53,7 @@ router.post('/register/buyer', upload.single('profilePhoto'), async (req, res) =
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(validatedData.password, salt)
 
-    let profilePhotoUrl = null
-    if (req.file) {
-      try {
-        const cloudinaryResult = await uploadToCloudinary(
-          req.file.buffer,
-          `buyer-${Date.now()}`,
-          'procurenepal/buyers'
-        )
-        profilePhotoUrl = cloudinaryResult.secure_url
-      } catch (uploadError) {
-        console.error('Image upload failed:', uploadError)
-        return res.status(400).json({ error: 'Failed to upload profile photo' })
-      }
-    }
+    // Note: `profilePhoto` column removed from the database; ignore uploaded file if present
 
     // Create user
     const user = await prisma.user.create({
@@ -76,7 +62,6 @@ router.post('/register/buyer', upload.single('profilePhoto'), async (req, res) =
         email: validatedData.email,
         phone: validatedData.phone,
         passwordHash,
-        profilePhoto: profilePhotoUrl,
         role: 'buyer',
       },
     })
@@ -98,7 +83,6 @@ router.post('/register/buyer', upload.single('profilePhoto'), async (req, res) =
         fullname: user.fullname,
         email: user.email,
         role: user.role,
-        profilePhoto: user.profilePhoto,
       },
     })
   } catch (error) {
@@ -147,20 +131,7 @@ router.post('/register/seller', upload.single('profilePhoto'), async (req, res) 
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(validatedData.password, salt)
 
-    let profilePhotoUrl = null
-    if (req.file) {
-      try {
-        const cloudinaryResult = await uploadToCloudinary(
-          req.file.buffer,
-          `seller-${Date.now()}`,
-          'procurenepal/sellers'
-        )
-        profilePhotoUrl = cloudinaryResult.secure_url
-      } catch (uploadError) {
-        console.error('Image upload failed:', uploadError)
-        return res.status(400).json({ error: 'Failed to upload profile photo' })
-      }
-    }
+    // Note: `profilePhoto` column removed from the database; ignore uploaded file if present
 
     // Create user and supplier in a transaction
     const user = await prisma.user.create({
@@ -169,7 +140,6 @@ router.post('/register/seller', upload.single('profilePhoto'), async (req, res) 
         email: validatedData.email,
         phone: validatedData.phone,
         passwordHash,
-        profilePhoto: profilePhotoUrl,
         role: 'seller',
         supplier: {
             create: {
@@ -203,7 +173,6 @@ router.post('/register/seller', upload.single('profilePhoto'), async (req, res) 
         fullname: user.fullname,
         email: user.email,
         role: user.role,
-        profilePhoto: user.profilePhoto,
         supplier: user.supplier,
       },
     })
@@ -261,7 +230,6 @@ router.post('/login', async (req, res) => {
         fullname: user.fullname,
         email: user.email,
         role: user.role,
-        profilePhoto: user.profilePhoto,
         supplier: user.supplier,
       },
     })
@@ -292,7 +260,6 @@ router.get('/me', authenticateToken, async (req, res) => {
         fullname: user.fullname,
         email: user.email,
         role: user.role,
-        profilePhoto: user.profilePhoto,
         supplier: user.supplier,
       },
     })

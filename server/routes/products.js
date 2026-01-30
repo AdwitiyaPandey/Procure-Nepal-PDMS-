@@ -126,7 +126,6 @@ router.get('/', async (req, res) => {
                 select: {
                   id: true,
                   fullname: true,
-                  profilePhoto: true,
                 },
               },
             },
@@ -156,19 +155,18 @@ router.get('/:id', async (req, res) => {
       where: { id: parseInt(req.params.id) },
       include: {
         supplier: {
-          select: {
-            id: true,
-            companyName: true,
-            user: {
-              select: {
-                id: true,
-                fullname: true,
-                profilePhoto: true,
-                email: true,
-                phone: true,
+            select: {
+              id: true,
+              companyName: true,
+              user: {
+                select: {
+                  id: true,
+                  fullname: true,
+                  email: true,
+                  phone: true,
+                },
               },
             },
-          },
         },
       },
     })

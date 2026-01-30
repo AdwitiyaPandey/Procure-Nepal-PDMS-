@@ -148,7 +148,7 @@ function Landingbanner() {
                   </div>
 
                   <div className="p-4">
-                    <h3 className="font-bold text-black text-lg mb-2 line-clamp-2">{p.name}</h3>
+                    <h3 className="font-bold text-black text-lg mb-2 line-clamp-2"  style={{ letterSpacing: '0.04em'}}>{p.name}</h3>
                     <p className="text-black text-sm line-clamp-2 mb-3">{p.description || 'High-quality product available for wholesale'}</p>
 
                     <div className="space-y-1 mb-4">

@@ -16,12 +16,12 @@ function AddProductForm({ onBack }) {
         const data = new FormData();
         Object.keys(formData).forEach(key => data.append(key, formData[key]));
         data.append('image', image);
-        data.append('sellerId', 1); // Replace with dynamic user.id from AuthContext
+        data.append('sellerId', 1); 
 
         try {
             await axios.post('http://localhost:5000/api/products/add', data);
             toast.success("Product added successfully!");
-            onBack(); // Go back to dashboard
+            onBack(); 
         } catch (err) {
             toast.error("Failed to add product");
         } finally {

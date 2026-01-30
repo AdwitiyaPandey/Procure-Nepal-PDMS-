@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AddProduct from './AddProduct'; // We will create this file next
+import AddProduct from './AddProduct';
 
 function SupplierProfile({ user }) {
   const [showForm, setShowForm] = useState(false);
@@ -42,10 +42,10 @@ function SupplierProfile({ user }) {
       </div>
 
       {showForm ? (
-        /* Render the Form */
+        
         <AddProduct user={user} onSuccess={() => setShowForm(false)} />
       ) : (
-        /* Render Dashboard Stats & Empty State */
+       
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             <StatCard icon="bi-box-seam" label="My Products" value={stats.totalProducts} color="teal" />

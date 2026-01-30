@@ -21,7 +21,7 @@ function SignupSupplier() {
     profilePhoto: null,
   });
 
-  // Redirect if not logged in (only buyers can upgrade)
+ 
   useEffect(() => {
     if (!user) {
       toast.error("Please login as a buyer first");
@@ -63,7 +63,7 @@ function SignupSupplier() {
       
       if (res.data.ok) {
         toast.success('Application submitted! Awaiting admin approval.');
-        login(res.data.user); // Update local role to 'seller'
+        login(res.data.user); 
         setTimeout(() => navigate('/'), 2000);
       }
     } catch (err) {

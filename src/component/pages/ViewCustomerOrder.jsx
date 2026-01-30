@@ -10,7 +10,7 @@ const mockOrders = [
   { id: 'ORD006', customerName: 'Deepa Patel', date: '2025-12-06', total: 3400.00, status: 'Shipped', products: 2 },
 ];
 
-// --- Utility Function to get status styling ---
+
 const getStatusBadge = (status) => {
   let colorClass = '';
   switch (status) {
@@ -41,9 +41,7 @@ const ViewCustomerOrder = () => {
   const [filterStatus, setFilterStatus] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   
-  // In a real application, you would add state for loading and error
-
-  // --- Filter and Search Logic (Memoized for performance) ---
+  
   const filteredOrders = useMemo(() => {
     return orders.filter(order => {
       // 1. Status Filter
@@ -60,7 +58,7 @@ const ViewCustomerOrder = () => {
   }, [orders, filterStatus, searchTerm]);
 
 
-  // --- Helper Component: Mobile Card View ---
+ 
   const MobileOrderCard = ({ order }) => (
     <div className="bg-white shadow overflow-hidden sm:hidden p-4 rounded-lg mb-4 border border-gray-200">
       <div className="flex justify-between items-start mb-2">
@@ -89,7 +87,7 @@ const ViewCustomerOrder = () => {
     </div>
   );
 
-  // --- Main Component Render ---
+
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
@@ -98,10 +96,10 @@ const ViewCustomerOrder = () => {
           🛍️ Customer Order Management
         </h2>
 
-        {/* --- Filters and Search Bar --- */}
+  
         <div className="bg-white shadow rounded-lg p-4 mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
           
-          {/* Search Input */}
+         
           <div className="md:col-span-2">
             <input
               type="text"
@@ -112,7 +110,7 @@ const ViewCustomerOrder = () => {
             />
           </div>
 
-          {/* Status Filter */}
+       
           <div>
             <select
               value={filterStatus}
@@ -136,7 +134,7 @@ const ViewCustomerOrder = () => {
             </div>
           ) : (
             <>
-              {/* Desktop Table View (Visible on sm and up) */}
+            
               <div className="hidden sm:block overflow-x-auto bg-white shadow rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
@@ -171,7 +169,7 @@ const ViewCustomerOrder = () => {
                 </table>
               </div>
 
-              {/* Mobile Card View (Visible only on screens smaller than sm) */}
+             
               <div className="sm:hidden space-y-4">
                 {filteredOrders.map((order) => (
                   <MobileOrderCard key={order.id} order={order} />

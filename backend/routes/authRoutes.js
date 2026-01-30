@@ -23,4 +23,27 @@ router.post('/register', upload.single('profilePhoto'), register);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 
+
+
+const { verifyToken } = require('../middleware/authMiddleware');
+const User = require('../models/User');
+
+router.get('/me', verifyToken, async (req, res) => {
+  try {
+    
+    const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ['password'] } 
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;
+

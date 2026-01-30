@@ -10,7 +10,7 @@ function AddProduct({ user, onSuccess }) {
     category: '',
     price: '',
     quantity: '',
-    phoneNumber: '', // Added as requested
+    phoneNumber: '', 
     image: null
   });
 
@@ -31,7 +31,7 @@ function AddProduct({ user, onSuccess }) {
     try {
       await axios.post('http://localhost:5000/api/products/add', data);
       toast.success("Product published successfully!");
-      onSuccess(); // Goes back to the dashboard view
+      onSuccess(); 
     } catch (err) {
       toast.error("Error publishing product");
     } finally {

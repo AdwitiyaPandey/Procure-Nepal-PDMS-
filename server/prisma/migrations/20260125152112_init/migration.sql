@@ -1,0 +1,2 @@
+-- Archived sqlite migration; emptied to allow new Postgres migrations
+-- Original contents moved to backups by maintainer

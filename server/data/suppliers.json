@@ -1,0 +1,50 @@
+[
+  {
+    "id": "c520a9d3-d79f-4cf3-a9d8-706ab907702b",
+    "fullname": "asdfsdf",
+    "email": "sadfsdf",
+    "companyName": "sadfsdf",
+    "pan": "1641651",
+    "vat": "215616",
+    "turnover": "516115615",
+    "established": "2025-12-25",
+    "status": "pending",
+    "submittedAt": "2025-12-02T15:20:50.757Z",
+    "files": {
+      "citizenship": null,
+      "profilePhoto": null
+    }
+  },
+  {
+    "id": "bc0f4205-305b-47f0-803e-f7d6aa7dec71",
+    "fullname": "asdfsdf",
+    "email": "ujjwal07.work@gmail.com",
+    "companyName": "sadfsdf",
+    "pan": "1641651",
+    "vat": "215616",
+    "turnover": "4500000",
+    "established": "2025-12-04",
+    "status": "pending",
+    "submittedAt": "2025-12-04T14:09:48.610Z",
+    "files": {
+      "citizenship": null,
+      "profilePhoto": null
+    }
+  },
+  {
+    "id": "f2615f9e-83b6-49e7-b1fa-adb2b33ba003",
+    "fullname": "Ujjwal Subedi",
+    "email": "creativeinventor7@gmail.com",
+    "companyName": "asdfsdf",
+    "pan": "45002156",
+    "vat": "",
+    "turnover": "",
+    "established": "",
+    "status": "pending",
+    "submittedAt": "2025-12-04T15:26:13.696Z",
+    "files": {
+      "citizenship": null,
+      "profilePhoto": null
+    }
+  }
+]

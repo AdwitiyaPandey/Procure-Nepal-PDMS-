@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                Int               @id @default(autoincrement())
+  fullname          String
+  email             String            @unique
+  phone             String            @unique
+  passwordHash      String
+  role              String            @default("buyer") // "buyer" or "seller"
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  // Relations
+  supplier          Supplier?
+  quoteRequests     QuoteRequest[]
+  passwordResets    PasswordReset[]
+  favourites        Favourite[]
+}
+
+model Supplier {
+  id                Int               @id @default(autoincrement())
+  userId            Int               @unique
+  companyName       String?
+  pan               String?           @unique
+  vat               String?           @unique
+  turnover          String?
+  established       String?
+  citizenship       String?
+  panVatDoc         String?
+  status            String            @default("pending") // "pending", "approved", "rejected"
+  rejectionReason   String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  // Relations
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products          Product[]
+}
+
+model Product {
+  id                Int               @id @default(autoincrement())
+  supplierId        Int
+  name              String
+  description       String?
+  category          String
+  price             Float
+  quantity          Int
+  marginPercentage  Float             @default(20)
+  image             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  // Relations
+  supplier          Supplier          @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  quoteRequests     QuoteRequest[]
+  favourites        Favourite[]
+}
+
+model Category {
+  id                Int               @id @default(autoincrement())
+  name              String            @unique
+  description       String?
+  icon              String?
+  createdAt         DateTime          @default(now())
+}
+
+model QuoteRequest {
+  id                Int               @id @default(autoincrement())
+  productId         Int
+  userId            Int
+  name              String
+  email             String
+  phone             String
+  company           String
+  quantity          Int
+  message           String?
+  status            String            @default("pending") // "pending", "responded", "completed"
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  // Relations
+  product           Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Favourite {
+  id                Int               @id @default(autoincrement())
+  userId            Int
+  productId         Int
+  createdAt         DateTime          @default(now())
+  
+  // Relations
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product           Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  // Unique constraint: user can favourite a product only once
+  @@unique([userId, productId])
+}
+
+model PasswordReset {
+  id                Int               @id @default(autoincrement())
+  userId            Int
+  token             String            @unique
+  expiresAt         DateTime
+  createdAt         DateTime          @default(now())
+  
+  // Relations
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

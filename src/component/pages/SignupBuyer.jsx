@@ -49,115 +49,116 @@ function SignupBuyer() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 flex items-center justify-center px-4 py-12">
-      <Toaster position="top-center" />
-      <div className="w-full max-w-lg">
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10">
-          {/* Header */}
-          <div className="mb-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-2xl">P</span>
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900">Buyer Signup</h1>
-            <p className="text-gray-600 mt-2">Start your wholesale journey in Nepal</p>
+   <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-8">
+  <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden">
+    {/* Decorative Header Bar */}
+    <div className="h-2 bg-gradient-to-r from-green-500 to-blue-600"></div>
+
+    <div className="p-6 md:p-10">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900">Buyer Signup</h2>
+        <p className="text-gray-500 mt-2 text-sm">Create your account to start sourcing products.</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="grid grid-cols-1 gap-5">
+          {/* Full Name */}
+          <div className="group">
+            <label className="block mb-1.5 text-sm font-semibold text-gray-700 group-focus-within:text-blue-600 transition-colors">
+              Full name
+            </label>
+            <input 
+              name="fullname" 
+              value={form.fullname} 
+              onChange={handleChange} 
+              placeholder="Enter your full name"
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400" 
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Full Name */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
-              <input
-                name="fullname"
-                value={form.fullname}
-                onChange={handleChange}
-                placeholder="Enter your full name"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
-              />
-            </div>
+          {/* Email */}
+          <div className="group">
+            <label className="block mb-1.5 text-sm font-semibold text-gray-700 group-focus-within:text-blue-600 transition-colors">
+              Email Address
+            </label>
+            <input 
+              type="email" 
+              name="email" 
+              value={form.email} 
+              onChange={handleChange} 
+              placeholder="example@mail.com"
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400" 
+            />
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="you@example.com"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
-                />
-              </div>
-              {/* Phone */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={form.phone}
-                  onChange={handleChange}
-                  placeholder="+977-98XXXXXXXX"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
-                />
-              </div>
-            </div>
+          {/* Phone */}
+          <div className="group">
+            <label className="block mb-1.5 text-sm font-semibold text-gray-700 group-focus-within:text-blue-600 transition-colors">
+              Phone number
+            </label>
+            <input 
+              type="tel" 
+              name="phone" 
+              value={form.phone} 
+              onChange={handleChange} 
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all" 
+              placeholder="e.g., +9779800xxxxx" 
+            />
+          </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
-              />
-            </div>
+          {/* Password */}
+          <div className="group">
+            <label className="block mb-1.5 text-sm font-semibold text-gray-700 group-focus-within:text-blue-600 transition-colors">
+              Password
+            </label>
+            <input 
+              type="password" 
+              name="password" 
+              value={form.password} 
+              onChange={handleChange} 
+              placeholder="••••••••"
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all" 
+            />
+          </div>
 
-            {/* File Upload */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Profile Photo (Optional)</label>
-              <div className="flex items-center justify-center w-full">
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <i className="bi bi-cloud-arrow-up text-2xl text-gray-400 mb-2"></i>
-                    <p className="text-xs text-gray-500">
-                      {form.profilePhoto ? form.profilePhoto.name : 'PNG, JPG or WEBP (Max 2MB)'}
-                    </p>
-                  </div>
-                  <input type="file" name="profilePhoto" className="hidden" accept="image/*" onChange={handleChange} />
-                </label>
+          {/* Profile Photo */}
+          <div>
+            <label className="block mb-1.5 text-sm font-semibold text-gray-700">
+              Profile photo <span className="text-gray-400 font-normal">(optional)</span>
+            </label>
+            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-200 border-dashed rounded-xl hover:border-blue-400 transition-colors bg-gray-50/50">
+              <div className="space-y-1 text-center">
+                <div className="flex text-sm text-gray-600">
+                  <label className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
+                    <span className="px-2 py-1">Upload a file</span>
+                    <input type="file" accept="image/*" name="profilePhoto" onChange={handleChange} className="sr-only" />
+                  </label>
+                  <p className="pl-1 pt-1">or drag and drop</p>
+                </div>
+                <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
               </div>
             </div>
-
-            {/* Buttons */}
-            <div className="flex flex-col gap-3 pt-2">
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold py-3 rounded-lg transition-all duration-200 shadow-lg disabled:opacity-50"
-              >
-                {loading ? 'Creating Account...' : 'Create Buyer Account'}
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate('/login')}
-                className="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-all"
-              >
-                Back to Login
-              </button>
-            </div>
-          </form>
-
-          <p className="text-center text-xs text-gray-500 mt-6 leading-relaxed">
-            By signing up, you agree to our Terms of Service and Privacy Policy. 
-            Verification may be required for wholesale access.
-          </p>
+          </div>
         </div>
-      </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-6">
+          <button className="flex-1 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-blue-200 active:scale-95 transition-all">
+            Submit & Upload
+          </button>
+          <button 
+            type="button" 
+            onClick={() => navigate(-1)} 
+            className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
-  );
+  </div>
+</div>
+  )
 }
 
 export default SignupBuyer;

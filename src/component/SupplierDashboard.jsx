@@ -185,27 +185,171 @@ function SupplierDashboard() {
                     </Link>
                   </div>
                 </div>
-              ))}
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-gray-700">Margin %</label>
+                  <input
+                    type="number"
+                    name="marginPercentage"
+                    value={form.marginPercentage}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500"
+                    placeholder="20"
+                    min="0"
+                    max="100"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Estimated retail margin percentage</p>
+                </div>
+              </div>
 
-              {/* CTA */}
-              <Link
-                to="/seller-register"
-                className={`
-                  bg-teal-600 text-white rounded-md flex flex-col items-center justify-center text-center p-4
-                  transition-all duration-500 ease-out transform
-                  ${visibleIndexes.includes(newlyAddedProducts.length) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}
-                  hover:bg-teal-700 hover:scale-105
-                `}
-              >
-                <p className="font-bold mb-1">Post Your Product</p>
-                <p className="text-sm">Become a Seller</p>
-              </Link>
+              <div>
+                <label className="block mb-2 text-sm font-semibold text-gray-700">Product Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="image"
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 bg-gradient-to-r from-green-600 to-blue-600 text-white py-2 rounded-md disabled:opacity-50"
+                >
+                  {loading ? 'Saving...' : 'Save Product'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setShowForm(false); resetForm() }}
+                  className="flex-1 border py-2 rounded-md"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* Products List */}
+        <div className="bg-white rounded-xl shadow">
+          <div className="p-4 sm:p-6 border-b">
+            <h2 className="text-lg sm:text-xl font-semibold">
+              Your Products ({products.length})
+            </h2>
+          </div>
+
+          {loading && !showForm ? (
+            <div className="p-6 text-center text-gray-600">Loading products...</div>
+          ) : products.length === 0 ? (
+            <div className="p-6 text-center text-gray-600">
+              No products yet.
+              {!showForm && (
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="block mt-2 text-green-600 underline"
+                >
+                  Add one now
+                </button>
+              )}
             </div>
           ) : (
-            <p className="text-gray-500 text-center">No products available</p>
+            <>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-left border-b bg-gray-50">
+                      <th className="p-4">Product</th>
+                      <th className="p-4">Category</th>
+                      <th className="p-4">Price</th>
+                      <th className="p-4">Margin</th>
+                      <th className="p-4">Qty</th>
+                      <th className="p-4">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map(product => (
+                      <tr key={product.id} className="border-b hover:bg-gray-50">
+                        <td className="p-4 font-semibold">{product.name}</td>
+                        <td className="p-4 text-sm text-gray-600">{product.category}</td>
+                        <td className="p-4 font-semibold text-green-600">
+                          NPR {product.price.toLocaleString()}
+                        </td>
+                        <td className="p-4 text-orange-600">
+                          {product.marginPercentage || 20}%
+                        </td>
+                        <td className="p-4">{product.quantity}</td>
+                        <td className="p-4 flex gap-2">
+                          <button
+                            onClick={() => startEdit(product)}
+                            className="px-3 py-1 bg-blue-600 text-white rounded-md text-sm"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => deleteProduct(product.id)}
+                            className="px-3 py-1 bg-red-600 text-white rounded-md text-sm"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/*  Mobile Cards */}
+              <div className="md:hidden p-4 space-y-4">
+                {products.map(product => (
+                  <div
+                    key={product.id}
+                    className="border rounded-lg p-4 shadow-sm"
+                  >
+                    <h3 className="font-semibold text-lg">{product.name}</h3>
+                    <p className="text-sm text-gray-500">{product.category}</p>
+
+                    <div className="mt-2 text-sm space-y-1">
+                      <p>
+                        <span className="font-medium">Price:</span>{' '}
+                        <span className="text-green-600 font-semibold">
+                          NPR {product.price.toLocaleString()}
+                        </span>
+                      </p>
+                      <p>
+                        <span className="font-medium">Margin:</span>{' '}
+                        {product.marginPercentage || 20}%
+                      </p>
+                      <p>
+                        <span className="font-medium">Quantity:</span>{' '}
+                        {product.quantity}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 flex gap-2">
+                      <button
+                        onClick={() => startEdit(product)}
+                        className="flex-1 bg-blue-600 text-white py-2 rounded-md text-sm"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteProduct(product.id)}
+                        className="flex-1 bg-red-600 text-white py-2 rounded-md text-sm"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
-      </section>
+
+      </div>
     </div>
   )
 }

@@ -21,63 +21,96 @@ function Categories() {
 
   if (loading) {
     return (
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
-          </div>
+      <section className="min-h-[60vh] flex items-center justify-center bg-white">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-black"></div>
+          <p className="text-sm text-gray-500">Loading categories…</p>
         </div>
       </section>
     )
   }
 
+
   return (
-  <section className="py-16 md:py-20 bg-gray-50">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="mb-12 text-center">
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 animate-fadeUp">
-        Popular Categories
-      </h2>
-      <p className="text-gray-600 animate-fadeUp" style={{ animationDelay: '0.1s' }}>
-        Browse products across different industries
-      </p>
-    </div>
+    <section className="bg-gray-50 py-10 sm:py-14 md:py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-6">
-      {categories.slice(0, 8).map((cat, i) => (
-        <button
-          key={cat}
-          onClick={() => handleCategoryClick(cat)}
-          style={{
-            animation: 'fadeUp 0.6s ease forwards',
-            animationDelay: `${i * 0.1}s`,
-          }}
-          className="opacity-0 group flex flex-col items-center p-4 md:p-6
-                     bg-gradient-to-b from-white to-gray-50 rounded-lg border border-gray-200
-                     hover:shadow-xl hover:scale-105 transition-all duration-300"
+        {/* Header */}
+        <div className="mb-8 sm:mb-10 md:mb-14 text-center sm:text-left">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+            Popular Categories
+          </h2>
+          <p className="mt-2 text-sm sm:text-base text-gray-600 max-w-xl">
+            Browse products across different industries
+          </p>
+        </div>
+
+        {/* Categories Grid */}
+        <div
+          className="
+            grid
+            grid-cols-2
+            sm:grid-cols-3
+            md:grid-cols-4
+            gap-4
+            sm:gap-5
+            md:gap-6
+          "
         >
-          <div className="text-4xl md:text-5xl mb-3 group-hover:rotate-6 transition-transform duration-300">
-            {categoryIcons[cat] || '📦'}
-          </div>
-          <h3 className="text-sm md:text-base font-medium text-gray-900 group-hover:text-teal-600 text-center transition-colors line-clamp-2">
-            {cat}
-          </h3>
-        </button>
-      ))}
-    </div>
-  </div>
+          {categories.slice(0, 8).map(cat => (
+            <button
+              key={cat}
+              onClick={() => handleCategoryClick(cat)}
+              className="
+                group
+                bg-white
+                rounded-2xl
+                border border-gray-200
+                p-4 sm:p-5 md:p-6
+                flex flex-col items-center justify-center
+                min-h-[120px] sm:min-h-[150px]
+                hover:shadow-xl hover:border-gray-900
+                transition-all duration-300
+                focus:outline-none focus:ring-2 focus:ring-black
+                active:scale-95
+              "
+            >
+              {/* Icon */}
+              <div
+                className="
+                  text-3xl
+                  sm:text-4xl
+                  md:text-5xl
+                  mb-2 sm:mb-3
+                  group-hover:scale-110
+                  transition-transform
+                "
+              >
+                {categoryIcons[cat] || '📦'}
+              </div>
 
-  {/* Inline animation keyframes */}
-  <style>
-    {`
-      @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    `}
-  </style>
-</section>
+              {/* Label */}
+              <h3
+                className="
+                  text-xs
+                  sm:text-sm
+                  md:text-base
+                  font-medium
+                  text-gray-800
+                  text-center
+                  leading-snug
+                "
+              >
+                {cat}
+              </h3>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
   )
+
+
 }
 
 export default Categories
